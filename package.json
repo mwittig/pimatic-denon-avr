@@ -1,0 +1,50 @@
+{
+  "name": "pimatic-denon-avr",
+  "description": "Pimatic Plugin to control a Denon or Pioneer AVR",
+  "author": {
+    "name": "Marcus Wittig",
+    "url": "https://github.com/mwittig"
+  },
+  "main": "denon-avr",
+  "files": [
+    "denon-avr.coffee",
+    "denon-avr-config-schema.coffee",
+    "device-config-schema.coffee",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "Denon AVR",
+    "Pioneer AVR",
+    "Pimatic"
+  ],
+  "version": "0.8.0",
+  "homepage": "https://github.com/mwittig/pimatic-denon-avr/tree/master",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mwittig/pimatic-denon-avr.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mwittig/pimatic-denon-avr/issues"
+  },
+  "license": "AGPL-3.0",
+  "maintainers": [
+    {
+      "name": "mwittig",
+      "url": "https://github.com/mwittig"
+    }
+  ],
+  "configSchema": "denon-avr-config-schema.coffee",
+  "dependencies": {
+  },
+  "optionalDependencies": {
+  },
+  "peerDependencies": {
+    "pimatic": "0.8.*"
+  },
+  "engines": {
+    "node": ">0.8.x",
+    "npm": ">1.1.x"
+  }
+}
