@@ -10,6 +10,7 @@
     "denon-avr.coffee",
     "denon-avr-config-schema.coffee",
     "device-config-schema.coffee",
+    "devices",
     "LICENSE",
     "README.md"
   ],
