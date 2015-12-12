@@ -33,9 +33,11 @@ module.exports = (env) ->
         )
 
     _requestUpdate: () ->
-      @plugin.connect().then =>
+      @plugin.connect().then () =>
         @plugin.sendRequest 'MU', '?'
-      .finally =>
+      .catch (error) =>
+        env.logger.debug "Error:", error
+      .finally () =>
         @_scheduleUpdate()
 
     _onResponseHandler: () ->
@@ -51,6 +53,7 @@ module.exports = (env) ->
       return new Promise( (resolve) =>
         @plugin.connect().then =>
           @plugin.sendRequest 'MU', if newState then 'ON' else 'OFF'
+          @_setState newState
           @_requestUpdate()
           resolve()
       )

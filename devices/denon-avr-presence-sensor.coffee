@@ -14,6 +14,7 @@ module.exports = (env) ->
       @id = config.id
       @name = config.name
       @interval = config.interval
+      @volumeDecibel = config.volumeDecibel
       @debug = @plugin.debug || false
       @plugin.on 'response', @_onResponseHandler()
       @attributes = _.cloneDeep(@attributes)
@@ -22,6 +23,7 @@ module.exports = (env) ->
         type: "number"
         acronym: 'VOL'
       }
+      @attributes.volume.unit = 'dB' if @volumeDecibel
       @attributes.input = {
         description: "Input Source"
         type: "string"
@@ -53,11 +55,13 @@ module.exports = (env) ->
 
     _requestUpdate: () ->
       env.logger.debug "Requesting update" if @debug
-      @plugin.connect().then =>
+      @plugin.connect().then () =>
         @plugin.sendRequest 'PW', '?'
         @plugin.sendRequest 'SI', '?'
         @plugin.sendRequest 'MV', '?'
-      .finally =>
+      .catch (error) =>
+        env.logger.debug "Error:", error
+      .finally () =>
         @_scheduleUpdate()
 
     _onResponseHandler: () ->
@@ -69,10 +73,13 @@ module.exports = (env) ->
           when 'SI'
             @_setAttribute 'input', response.param
           when 'MV'
-            @_setAttribute 'volume', @_volumeToNumber response.param
+            if @volumeDecibel
+              @_setAttribute 'volume', @_volumeToDecibel response.param
+            else
+              @_setAttribute 'volume', @_volumeToNumber response.param
 
     _volumeToDecibel: (volume, zeroDB=80) ->
-      return _volumeToNumber(volume) - zeroDB
+      return @_volumeToNumber(volume) - zeroDB
 
     _volumeToNumber: (volume) ->
       decimal = if volume.length is 3 then 0.5 else 0

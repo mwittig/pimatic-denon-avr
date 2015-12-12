@@ -10,6 +10,10 @@ module.exports = {
         description: "The time interval in seconds at which the power state of the AVR will be read"
         type: "number"
         default: 60
+      volumeDecibel:
+        description: "If true the volume is presented in dB, otherwise relative level between 00 and 99 is displayed"
+        type: "boolean"
+        default: false
   },
   DenonAvrPowerSwitch: {
     title: "Denon AVR Power Switch"

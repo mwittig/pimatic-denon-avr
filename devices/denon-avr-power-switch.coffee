@@ -35,7 +35,9 @@ module.exports = (env) ->
     _requestUpdate: () ->
       @plugin.connect().then =>
         @plugin.sendRequest 'PW', '?'
-      .finally =>
+      .catch (error) =>
+        env.logger.debug "Error:", error
+      .finally () =>
         @_scheduleUpdate()
 
     _onResponseHandler: () ->
@@ -45,8 +47,11 @@ module.exports = (env) ->
           @_setState if response.param is 'ON' then true else false
 
     changeStateTo: (newState) ->
-      @plugin.connect().then =>
-        @plugin.sendRequest 'PW', if newState then 'ON' else 'STANDBY'
+      return new Promise( (resolve) =>
+        @plugin.connect().then =>
+          @plugin.sendRequest 'PW', if newState then 'ON' else 'STANDBY'
+          @_setState newState
+          resolve())
 
     getState: () ->
-      return new Promise.resolve @_state
+      return Promise.resolve @_state
