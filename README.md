@@ -4,9 +4,9 @@ Pimatic plugin to monitor &amp; control a Denon AV receiver over a network conne
 
 ## Status of Implementation
 
-The current implementation is pretty basic. Additional feature can be added easily and I 
-am happy to do this on demand. Apart from this I am planning to add an auto-discovery feature
-for the upcoming pimatic v0.9. 
+The current implementation is pretty basic. Additional features can be added easily 
+and I am happy to do this on demand. Apart from this, I am planning to add an 
+auto-discovery feature for the upcoming pimatic v0.9.
 
 ## Plugin Configuration
 
@@ -43,7 +43,7 @@ AVR configuration you may not be able to switch it on. See the AVR manual for de
     
 ### DenonAvrMuteSwitch
 
-The Mute Switch can be used to mute the master volume.
+The Mute Switch can be used to mute or un-mute the master volume.
     
     {
       "id": "avr-3",

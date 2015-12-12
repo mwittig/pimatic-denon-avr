@@ -9,7 +9,7 @@ module.exports = {
       interval:
         description: "The time interval in seconds at which the power state of the AVR will be read"
         type: "number"
-        default: 10
+        default: 60
   },
   DenonAvrPowerSwitch: {
     title: "Denon AVR Power Switch"
@@ -20,7 +20,7 @@ module.exports = {
       interval:
         description: "The time interval in seconds at which the power state of the AVR will be read"
         type: "number"
-        default: 10
+        default: 60
   },
   DenonAvrMuteSwitch: {
     title: "Denon AVR Mute Switch"
@@ -31,6 +31,6 @@ module.exports = {
       interval:
         description: "The time interval in seconds at which the mutr state of the AVR will be read"
         type: "number"
-        default: 10
+        default: 60
   }
 }

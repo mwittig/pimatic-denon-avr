@@ -13,21 +13,19 @@ module.exports = (env) ->
     constructor: (@config, @plugin, lastState) ->
       @id = config.id
       @name = config.name
-      @interval = config.interval || 60
+      @interval = config.interval
       @debug = @plugin.debug || false
       @plugin.on 'response', @_onResponseHandler()
       @_state = false;
       super()
-
-      @_requestUpdate()
-      @_scheduleUpdate()
+      process.nextTick () =>
+        @_requestUpdate()
 
     _scheduleUpdate: () ->
       if @_timeoutObject?
         clearTimeout @_timeoutObject
 
       if @interval > 0
-        # keep updating
         @_timeoutObject = setTimeout( =>
           @_timeoutObject = null
           @_requestUpdate()
@@ -37,6 +35,8 @@ module.exports = (env) ->
     _requestUpdate: () ->
       @plugin.connect().then =>
         @plugin.sendRequest 'PW', '?'
+      .finally =>
+        @_scheduleUpdate()
 
     _onResponseHandler: () ->
       return (response) =>

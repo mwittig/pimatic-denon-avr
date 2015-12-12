@@ -2,6 +2,7 @@
 module.exports = (env) ->
 
   Promise = env.require 'bluebird'
+  retry = require 'bluebird-retry'
   net = require 'net'
   devices = [
     'denon-avr-presence-sensor'
@@ -19,18 +20,13 @@ module.exports = (env) ->
   class DenonAvrPlugin extends env.plugins.Plugin
 
     init: (app, @framework, @config) =>
-      @socket = new net.Socket allowHalfOpen: true
-      @socket.setTimeout 200
-      @socket.setEncoding 'utf8'
-      @socket.on 'data', @_onDataHandler()
-      @socket.on 'close', @_onCloseHandler()
-      @socket.on 'error', @_onErrorHandler()
       @isConnected = false
       @commandQueue = []
       @host = config.host
       @port = config.port || 23
       @debug = config.debug || false
       @lastRequest = new Promise.resolve()
+      @connectRequest = new Promise.resolve()
 
       # register devices
       deviceConfigDef = require("./device-config-schema")
@@ -53,9 +49,16 @@ module.exports = (env) ->
       return () =>
         env.logger.debug "Connection closed" if @debug
 
+    _onTimeoutHandler: () ->
+      return () =>
+        env.logger.debug "Connection idle, closing"
+        @isConnected = false
+        @socket.setTimeout 0
+        @socket.destroy()
+        
     _onErrorHandler: () ->
       return (error) =>
-        env.logger.debug "Connection Error", error if @debug
+        env.logger.debug "Connection Error:", error if @debug
 
     _onDataHandler: () ->
       return (data) =>
@@ -78,28 +81,49 @@ module.exports = (env) ->
       return () =>
         @isConnected = true
         env.logger.debug "Connected" if @debug
-        @socket.removeListener 'error', @_onConnectedErrorHandler()
-        @socket.setNoDelay true
-        @_flush()
-        resolve()
+        @socket.removeAllListeners 'error'
+        @socket.on 'error', @_onErrorHandler()
+        @_flush().then =>
+          resolve()
 
     _onConnectedErrorHandler: (reject) ->
       return (error) =>
         @isConnected = false
         env.logger.debug "Connection failed:", error if @debug
-        @socket.removeListener 'error', @_onConnectedSuccessHandler()
+        @socket.removeAllListeners 'connect'
         reject(error)
 
-    connect: () ->
-      return @lastRequest = Promise.settle([@lastRequest]).then( =>
+    _connect: () ->
+      return @connectRequest = Promise.settle([@connectRequest]).then () =>
         return new Promise (resolve, reject) =>
           if not @isConnected
+            @socket = new net.Socket allowHalfOpen: false
+            @socket.setEncoding 'utf8'
+            @socket.setNoDelay true
+            @socket.setTimeout 5000
+            @socket.on 'data', @_onDataHandler()
+            @socket.on 'timeout', @_onTimeoutHandler()
+            @socket.on 'close', @_onCloseHandler()
+            @socket.on 'error', @_onErrorHandler()
             @socket.once 'connect', @_onConnectedSuccessHandler(resolve)
             @socket.once 'error', @_onConnectedErrorHandler(reject)
             env.logger.debug "Trying to connect to #{@host}:#{@port}" if @debug
             @socket.connect @port, @host
           else
             resolve()
+
+
+    connect: () ->
+      return  retry(@_connect.bind @,
+        {max_tries: 10, max_interval: 30000, interval: 1000, backoff: 2})
+
+    close: () ->
+      return @lastRequest = Promise.settle([@lastRequest]).then( =>
+        return new Promise (resolve) =>
+          if @isConnected
+            @isConnected = false
+            @socket.end()
+          resolve()
       )
 
     _write: () ->
@@ -112,19 +136,24 @@ module.exports = (env) ->
       )
       
     _flush: () ->
-      # flush and forget
+      writers = []
       while cmd = @commandQueue.shift()
-        @socket.write cmd
-      return Promise.resolve()
+        writers.push @socket.write cmd
+
+      result = Promise.all(writers).then( =>
+        writers.length = 0
+      )
+      return result
 
     pause: () ->
       return Promise.delay 500
 
     sendRequest: (command, param="") ->
-      return new Promise (resolve, reject) =>
+      return new Promise (resolve) =>
         @commandQueue.push "#{command}#{param}\r"
-        @_flush() if @isConnected
-        return resolve()
+        if @isConnected
+          @_flush().then =>
+            resolve()
 
   # ###Finally
   # Create a instance of my plugin
