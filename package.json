@@ -19,7 +19,7 @@
     "Pioneer AVR",
     "Pimatic"
   ],
-  "version": "0.8.3",
+  "version": "0.8.4",
   "homepage": "https://github.com/mwittig/pimatic-denon-avr/tree/master",
   "private": false,
   "repository": {
