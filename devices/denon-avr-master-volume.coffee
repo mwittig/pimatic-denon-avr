@@ -12,12 +12,13 @@ module.exports = (env) ->
     # @param [DenonAvrPlugin] plugin   plugin instance
     # @param [Object] lastState state information stored in database
     constructor: (@config, @plugin, lastState) ->
+      @_base = commons.base @, config.class
       @id = config.id
       @name = config.name
-      @interval = config.interval
+      @interval = @_base.normalize config.interval, 10
       @volumeDecibel = config.volumeDecibel
-      @volumeLimit = @_normalize config.volumeLimit, 0, 99
-      @maxAbsoluteVolume = @_normalize config.maxAbsoluteVolume, 0, 99
+      @volumeLimit = @_base.normalize config.volumeLimit, 0, 99
+      @maxAbsoluteVolume = @_base.normalize config.maxAbsoluteVolume, 0, 99
       @debug = @plugin.debug || false
       @plugin.on 'response', @_onResponseHandler()
       @attributes = _.cloneDeep(@attributes)
@@ -30,23 +31,12 @@ module.exports = (env) ->
       @_dimlevel = 0
       @_state = false
       @_volume = 0
-      @_base = commons.base @, 'DenonAvrMasterVolume'
       super()
       process.nextTick () =>
         @_requestUpdate()
 
-    _normalize: (value, lowerRange, upperRange) ->
-      if upperRange
-        return Math.min (Math.max value, lowerRange), upperRange
-      else
-        return Math.max value lowerRange
-
-    _setAttribute: (attributeName, value) ->
-      if @['_' + attributeName] isnt value
-        @['_' + attributeName] = value
-        @emit attributeName, value
-
     _requestUpdate: () ->
+      @_base.cancelUpdate()
       @_base.debug "Requesting update"
       @plugin.connect().then () =>
         @plugin.sendRequest 'MV', '?'
@@ -75,9 +65,9 @@ module.exports = (env) ->
 
     _setVolume: (volume) ->
       if @volumeDecibel
-        @_setAttribute 'volume', @_volumeToDecibel volume
+        @_base.setAttribute 'volume', @_volumeToDecibel volume
       else
-        @_setAttribute 'volume', @_volumeToNumber volume
+        @_base.setAttribute 'volume', @_volumeToNumber volume
 
     _levelToVolumeParam: (level) ->
       num = Math.floor @maxAbsoluteVolume * level / 100
@@ -88,7 +78,7 @@ module.exports = (env) ->
       return Math.floor num * 100 / @maxAbsoluteVolume
 
     changeDimlevelTo: (newLevel) ->
-      return new Promise( (resolve) =>
+      return new Promise (resolve) =>
         if @volumeLimit > 0 and newLevel > @volumeLimit
           newLevel = @volumeLimit
 
@@ -97,7 +87,6 @@ module.exports = (env) ->
           @_setDimlevel newLevel
           @_requestUpdate()
           resolve()
-      )
 
     getVolume: () ->
       return new Promise.resolve @_volume

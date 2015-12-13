@@ -12,18 +12,19 @@ module.exports = (env) ->
     # @param [DenonAvrPlugin] plugin   plugin instance
     # @param [Object] lastState state information stored in database
     constructor: (@config, @plugin, lastState) ->
+      @_base = commons.base @, config.class
       @id = config.id
       @name = config.name
-      @interval = config.interval
+      @interval = @_base.normalize config.interval, 10
       @debug = @plugin.debug || false
       @plugin.on 'response', @_onResponseHandler()
       @_state = false
-      @_base = commons.base @, 'DenonAvrPowerSwitch'
       super()
       process.nextTick () =>
         @_requestUpdate()
 
     _requestUpdate: () ->
+      @_base.cancelUpdate()
       @_base.debug "Requesting update"
       @plugin.connect().then =>
         @plugin.sendRequest 'PW', '?'
@@ -39,11 +40,12 @@ module.exports = (env) ->
           @_setState if response.param is 'ON' then true else false
 
     changeStateTo: (newState) ->
-      return new Promise( (resolve) =>
+      return new Promise (resolve) =>
         @plugin.connect().then =>
           @plugin.sendRequest 'PW', if newState then 'ON' else 'STANDBY'
           @_setState newState
-          resolve())
+          @_requestUpdate()
+          resolve()
 
     getState: () ->
       return Promise.resolve @_state

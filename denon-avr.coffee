@@ -4,6 +4,7 @@ module.exports = (env) ->
   Promise = require 'bluebird'
   retry = require 'bluebird-retry'
   net = require 'net'
+  _ = env.require 'lodash'
   commons = require('pimatic-plugin-commons')(env)
   devices = [
     'denon-avr-presence-sensor'
@@ -28,7 +29,7 @@ module.exports = (env) ->
       @host = config.host
       @port = config.port || 23
       @debug = config.debug || false
-      @lastRequest = new Promise.resolve()
+      @lastFlush = new Promise.resolve()
       @connectRequest = new Promise.resolve()
       @_base = commons.base @, 'Plugin'
 
@@ -67,24 +68,26 @@ module.exports = (env) ->
         if @isConnected
           @_base.error "Connection Error:", error
           @isConnected = false
+          @socket.setTimeout 0
           @socket.destroy()
 
     _onDataHandler: () ->
       return (data) =>
         responses = data.toString().trim().split '\r'
-        responses = @_base.unique responses if responses.length > 10
+        #responses = @_base.unique responses
+        @_base.debug('Responses:', responses)
 
         for response in responses
           for command, regex of commands
-            if matchedResults = response.match(regex)
-              found =
+            matchedResults = response.match regex 
+            if matchedResults?
+              @emit 'response',
                 matchedResults: matchedResults
                 command: matchedResults[1]
                 param: matchedResults[2]
                 message: matchedResults[0]
-
-              @emit 'response', found
               break
+        responses.length = 0
 
     _onConnectedSuccessHandler: (resolve) ->
       return () =>
@@ -111,9 +114,10 @@ module.exports = (env) ->
             @socket.setEncoding 'utf8'
             @socket.setNoDelay true
             @socket.setTimeout 10000
+            @socket.removeAllListeners()
             @socket.on 'data', @_onDataHandler()
-            @socket.on 'timeout', @_onTimeoutHandler()
-            @socket.on 'close', @_onCloseHandler()
+            @socket.once 'timeout', @_onTimeoutHandler()
+            @socket.once 'close', @_onCloseHandler()
             @socket.on 'error', @_onErrorHandler()
             @socket.once 'connect', @_onConnectedSuccessHandler(resolve)
             @socket.once 'error', @_onConnectedErrorHandler(reject)
@@ -124,33 +128,42 @@ module.exports = (env) ->
 
 
     connect: () ->
-      return retry(@_connect.bind @, {max_tries: 10, interval: 2000})
+      return retry(@_connect.bind @, {max_tries: 20, interval: 1000})
 
-    _write: () ->
-      return @lastRequest = settled(@lastRequest).then( =>
+
+    _write: (cmd) ->
+      new Promise (resolve) =>
         @socket.write cmd, () =>
-          Promise.delay 500
-            .then( =>
-              return Promise.resolve
-            )
-      )
-      
+          if cmd.match(/^PWON/)?
+            # enforce 2 seconds delay after power on for next command
+            @pause(2000).then () =>
+              resolve()
+          else
+            resolve()
+
+
     _flush: () ->
-      return series(@commandQueue, (cmd) =>
-        @socket.write cmd, () =>
-          @pause()
-      ).finally () =>
+      return @lastFlush = settled(@lastFlush).then () =>
+        commandsToSend = _.cloneDeep @commandQueue
         @commandQueue.length = 0
+        @_base.debug "Flushing:", commandsToSend
+        return series(commandsToSend, (cmd) =>
+          @_base.debug "Sending:", [cmd]
+          @_write cmd
+        ).finally () =>
+          commandsToSend.length = 0
 
-    pause: () ->
-      return Promise.delay 1000
+    pause: (ms=50) ->
+      @_base.debug "Pausing:", ms, "ms"
+      Promise.delay ms
+
 
     sendRequest: (command, param="") ->
       return new Promise (resolve) =>
         commandString ="#{command}#{param}\r"
         # look for duplicate in commandQueue, remove it if found
-        index = @commandQueue.indexOf commandString
-        @commandQueue.splice index, 1 if index >= 0
+        #index = @commandQueue.indexOf commandString
+        #@commandQueue.splice index, 1 if index >= 0
         @commandQueue.push commandString
         process.nextTick () =>
           if @isConnected

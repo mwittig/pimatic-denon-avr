@@ -13,9 +13,10 @@ module.exports = (env) ->
     # @param [DenonAvrPlugin] plugin   plugin instance
     # @param [Object] lastState state information stored in database
     constructor: (@config, @plugin, lastState) ->
+      @_base = commons.base @, config.class
       @id = config.id
       @name = config.name
-      @interval = config.interval
+      @interval = @_base.normalize config.interval, 10
       @volumeDecibel = config.volumeDecibel
       @debug = @plugin.debug || false
       @plugin.on 'response', @_onResponseHandler()
@@ -34,24 +35,12 @@ module.exports = (env) ->
       @_presence = false
       @_volume = 0
       @_input = ""
-      @_base = commons.base @, 'DenonAvrPresenceSensor'
       super()
       process.nextTick () =>
         @_requestUpdate()
 
-    _scheduleUpdate: () ->
-      if @_timeoutObject?
-        clearTimeout @_timeoutObject
-
-      if @interval > 0
-        @_base.debug "Next Request in #{@interval * 1000} ms"
-        @_timeoutObject = setTimeout( =>
-          @_timeoutObject = null
-          @_requestUpdate()
-        , @interval * 1000
-        )
-
     _requestUpdate: () ->
+      @_base.cancelUpdate()
       @_base.debug "Requesting update"
       @plugin.connect().then () =>
         @plugin.sendRequest 'PW', '?'

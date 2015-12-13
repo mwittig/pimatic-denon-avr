@@ -1,6 +1,6 @@
 {
   "name": "pimatic-denon-avr",
-  "description": "Pimatic Plugin to control a Denon or Pioneer AVR",
+  "description": "Pimatic Plugin to monitor and control a Denon or Marantz AV Receiver",
   "author": {
     "name": "Marcus Wittig",
     "url": "https://github.com/mwittig"
@@ -40,7 +40,7 @@
   "dependencies": {
     "bluebird": "^3.0.6",
     "bluebird-retry": "^0.5.2",
-    "pimatic-plugin-commons": "^0.8.1"
+    "pimatic-plugin-commons": "^0.8.2"
   },
   "optionalDependencies": {},
   "peerDependencies": {

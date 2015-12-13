@@ -7,7 +7,7 @@ module.exports = {
     extensions: ["xLink", "xPresentLabel", "xAbsentLabel"]
     properties:
       interval:
-        description: "The time interval in seconds at which the power state of the AVR will be read"
+        description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
         type: "number"
         default: 60
       volumeDecibel:
@@ -22,7 +22,7 @@ module.exports = {
     extensions: ["xLink", "xPresentLabel", "xAbsentLabel"]
     properties:
       interval:
-        description: "The time interval in seconds at which the power state of the AVR will be read"
+        description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
         type: "number"
         default: 60
       volumeDecibel:
@@ -45,7 +45,7 @@ module.exports = {
     extensions: ["xLink", "xOnLabel", "xOffLabel"]
     properties:
       interval:
-        description: "The time interval in seconds at which the power state of the AVR will be read"
+        description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
         type: "number"
         default: 60
   },
@@ -56,7 +56,7 @@ module.exports = {
     extensions: ["xLink", "xOnLabel", "xOffLabel"]
     properties:
       interval:
-        description: "The time interval in seconds at which the mutr state of the AVR will be read"
+        description: "The time interval in seconds (minimum 10) at which the mutr state of the AVR will be read"
         type: "number"
         default: 60
   }

@@ -11,7 +11,7 @@ module.exports = {
       description: "Hostname or IP address of the AVR"
       type: "string"
     port:
-      description: "AVR port"
+      description: "AVR control port"
       type: "number"
       default: 23
 }
