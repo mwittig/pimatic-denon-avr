@@ -1,24 +1,27 @@
 # Denon AVR plugin
 module.exports = (env) ->
 
-  Promise = env.require 'bluebird'
+  Promise = require 'bluebird'
   retry = require 'bluebird-retry'
   net = require 'net'
+  commons = require('pimatic-plugin-commons')(env)
   devices = [
     'denon-avr-presence-sensor'
     'denon-avr-power-switch'
     'denon-avr-mute-switch'
+    'denon-avr-master-volume'
   ]
   commands =
     POWER: /^(PW)([A-Z]+)/
     VOLUME: /^(MV)([0-9]+)/
     MUTE: /^(MU)([A-Z]+)/
     INPUT: /^(SI)(.+)/
+  settled = (promise) -> Promise.settle([promise])
+  series = (input, mapper) -> Promise.mapSeries(input, mapper)
 
 
   # ###DenonAvrPlugin class
   class DenonAvrPlugin extends env.plugins.Plugin
-
     init: (app, @framework, @config) =>
       @isConnected = false
       @commandQueue = []
@@ -27,6 +30,8 @@ module.exports = (env) ->
       @debug = config.debug || false
       @lastRequest = new Promise.resolve()
       @connectRequest = new Promise.resolve()
+      @_base = commons.base @, 'Plugin'
+
 
       # register devices
       deviceConfigDef = require("./device-config-schema")
@@ -34,7 +39,7 @@ module.exports = (env) ->
         # convert kebap-case to camel-case notation with first character capitalized
         className = device.replace /(^[a-z])|(\-[a-z])/g, ($1) -> $1.toUpperCase().replace('-','')
         classType = require('./devices/' + device)(env)
-        env.logger.debug "Registering device class #{className}" if @debug
+        @_base.debug "Registering device class #{className}"
         @framework.deviceManager.registerDeviceClass(className, {
           configDef: deviceConfigDef[className],
           createCallback: @_callbackHandler(className, classType)
@@ -47,23 +52,27 @@ module.exports = (env) ->
 
     _onCloseHandler: () ->
       return () =>
-        env.logger.debug "Connection closed" if @debug
+        @_base.debug "Connection closed"
 
     _onTimeoutHandler: () ->
       return () =>
-        env.logger.debug "Connection idle, closing"
-        @isConnected = false
-        @socket.setTimeout 0
-        @socket.destroy()
+        if @isConnected
+          @_base.debug "Connection idle, closing"
+          @isConnected = false
+          @socket.setTimeout 0
+          @socket.destroy()
         
     _onErrorHandler: () ->
       return (error) =>
-        env.logger.debug "Connection Error:", error if @debug
+        if @isConnected
+          @_base.error "Connection Error:", error
+          @isConnected = false
+          @socket.destroy()
 
     _onDataHandler: () ->
       return (data) =>
         responses = data.toString().trim().split '\r'
-        found = null
+        responses = @_base.unique responses if responses.length > 10
 
         for response in responses
           for command, regex of commands
@@ -80,7 +89,7 @@ module.exports = (env) ->
     _onConnectedSuccessHandler: (resolve) ->
       return () =>
         @isConnected = true
-        env.logger.debug "Connected" if @debug
+        @_base.debug "Connected"
         @socket.removeAllListeners 'error'
         @socket.on 'error', @_onErrorHandler()
         @_flush().then =>
@@ -91,43 +100,34 @@ module.exports = (env) ->
         @isConnected = false
         env.logger.debug "Connection failed:", error if @debug
         @socket.removeAllListeners 'connect'
+        @socket.destroy()
         reject(error)
 
     _connect: () ->
-      return @connectRequest = Promise.settle([@connectRequest]).then () =>
+      return @connectRequest = settled(@connectRequest).then () =>
         return new Promise (resolve, reject) =>
           if not @isConnected
             @socket = new net.Socket allowHalfOpen: false
             @socket.setEncoding 'utf8'
             @socket.setNoDelay true
-            @socket.setTimeout 5000
+            @socket.setTimeout 10000
             @socket.on 'data', @_onDataHandler()
             @socket.on 'timeout', @_onTimeoutHandler()
             @socket.on 'close', @_onCloseHandler()
             @socket.on 'error', @_onErrorHandler()
             @socket.once 'connect', @_onConnectedSuccessHandler(resolve)
             @socket.once 'error', @_onConnectedErrorHandler(reject)
-            env.logger.debug "Trying to connect to #{@host}:#{@port}" if @debug
+            @_base.debug "Trying to connect to #{@host}:#{@port}"
             @socket.connect @port, @host
           else
             resolve()
 
 
     connect: () ->
-      return  retry(@_connect.bind @,
-        {max_tries: 10, max_interval: 30000, interval: 1000, backoff: 2})
-
-    close: () ->
-      return @lastRequest = Promise.settle([@lastRequest]).then( =>
-        return new Promise (resolve) =>
-          if @isConnected
-            @isConnected = false
-            @socket.end()
-          resolve()
-      )
+      return retry(@_connect.bind @, {max_tries: 10, interval: 2000})
 
     _write: () ->
-      return @lastRequest = Promise.settle([@lastRequest]).then( =>
+      return @lastRequest = settled(@lastRequest).then( =>
         @socket.write cmd, () =>
           Promise.delay 500
             .then( =>
@@ -136,23 +136,27 @@ module.exports = (env) ->
       )
       
     _flush: () ->
-      writers = []
-      while cmd = @commandQueue.shift()
-        writers.push @socket.write cmd
-
-      result = Promise.all(writers).then( =>
-        writers.length = 0
-      )
-      return result
+      return series(@commandQueue, (cmd) =>
+        @socket.write cmd, () =>
+          @pause()
+      ).finally () =>
+        @commandQueue.length = 0
 
     pause: () ->
-      return Promise.delay 500
+      return Promise.delay 1000
 
     sendRequest: (command, param="") ->
       return new Promise (resolve) =>
-        @commandQueue.push "#{command}#{param}\r"
-        if @isConnected
-          @_flush().then =>
+        commandString ="#{command}#{param}\r"
+        # look for duplicate in commandQueue, remove it if found
+        index = @commandQueue.indexOf commandString
+        @commandQueue.splice index, 1 if index >= 0
+        @commandQueue.push commandString
+        process.nextTick () =>
+          if @isConnected
+            @_flush().then =>
+              resolve()
+          else
             resolve()
 
   # ###Finally

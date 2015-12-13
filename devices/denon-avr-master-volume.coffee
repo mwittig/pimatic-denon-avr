@@ -4,9 +4,8 @@ module.exports = (env) ->
   _ = env.require 'lodash'
   commons = require('pimatic-plugin-commons')(env)
 
-
   # Device class representing an the power state of the Denon AVR
-  class DenonAvrPresenceSensor extends env.devices.PresenceSensor
+  class DenonAvrMasterVolume extends env.devices.DimmerActuator
 
     # Create a new DenonAvrPresenceSensor device
     # @param [Object] config    device configuration
@@ -17,6 +16,8 @@ module.exports = (env) ->
       @name = config.name
       @interval = config.interval
       @volumeDecibel = config.volumeDecibel
+      @volumeLimit = @_normalize config.volumeLimit, 0, 99
+      @maxAbsoluteVolume = @_normalize config.maxAbsoluteVolume, 0, 99
       @debug = @plugin.debug || false
       @plugin.on 'response', @_onResponseHandler()
       @attributes = _.cloneDeep(@attributes)
@@ -26,55 +27,41 @@ module.exports = (env) ->
         acronym: 'VOL'
       }
       @attributes.volume.unit = 'dB' if @volumeDecibel
-      @attributes.input = {
-        description: "Input Source"
-        type: "string"
-        acronym: 'INPUT'
-      }
-      @_presence = false
+      @_dimlevel = 0
+      @_state = false
       @_volume = 0
-      @_input = ""
-      @_base = commons.base @, 'DenonAvrPresenceSensor'
+      @_base = commons.base @, 'DenonAvrMasterVolume'
       super()
       process.nextTick () =>
         @_requestUpdate()
 
-    _scheduleUpdate: () ->
-      if @_timeoutObject?
-        clearTimeout @_timeoutObject
+    _normalize: (value, lowerRange, upperRange) ->
+      if upperRange
+        return Math.min (Math.max value, lowerRange), upperRange
+      else
+        return Math.max value lowerRange
 
-      if @interval > 0
-        @_base.debug "Next Request in #{@interval * 1000} ms"
-        @_timeoutObject = setTimeout( =>
-          @_timeoutObject = null
-          @_requestUpdate()
-        , @interval * 1000
-        )
+    _setAttribute: (attributeName, value) ->
+      if @['_' + attributeName] isnt value
+        @['_' + attributeName] = value
+        @emit attributeName, value
 
     _requestUpdate: () ->
       @_base.debug "Requesting update"
       @plugin.connect().then () =>
-        @plugin.sendRequest 'PW', '?'
-        @plugin.sendRequest 'SI', '?'
         @plugin.sendRequest 'MV', '?'
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
-        @_base.scheduleUpdate @_requestUpdate, @interval * 1000
+        @_base.scheduleUpdate(@_requestUpdate, @interval * 1000)
 
     _onResponseHandler: () ->
       return (response) =>
         @_base.debug "Response", response.matchedResults
         switch response.command
-          when 'PW'
-            @_setPresence if response.param is 'ON' then true else false
-          when 'SI'
-            @_base.setAttribute 'input', response.param
           when 'MV'
-            if @volumeDecibel
-              @_base.setAttribute 'volume', @_volumeToDecibel response.param
-            else
-              @_base.setAttribute 'volume', @_volumeToNumber response.param
+            @_setDimlevel @_volumeParamToLevel response.param
+            @_setVolume response.param
 
     _volumeToDecibel: (volume, zeroDB=80) ->
       return @_volumeToNumber(volume) - zeroDB
@@ -86,11 +73,31 @@ module.exports = (env) ->
       else
         return volume
 
-    getPresence: () ->
-      return new Promise.resolve @_presence
+    _setVolume: (volume) ->
+      if @volumeDecibel
+        @_setAttribute 'volume', @_volumeToDecibel volume
+      else
+        @_setAttribute 'volume', @_volumeToNumber volume
+
+    _levelToVolumeParam: (level) ->
+      num = Math.floor @maxAbsoluteVolume * level / 100
+      return if num < 10 then "0" + num else num + ""
+
+    _volumeParamToLevel: (param) ->
+      num = @_volumeToNumber param
+      return Math.floor num * 100 / @maxAbsoluteVolume
+
+    changeDimlevelTo: (newLevel) ->
+      return new Promise( (resolve) =>
+        if @volumeLimit > 0 and newLevel > @volumeLimit
+          newLevel = @volumeLimit
+
+        @plugin.connect().then =>
+          @plugin.sendRequest 'MV', @_levelToVolumeParam (newLevel)
+          @_setDimlevel newLevel
+          @_requestUpdate()
+          resolve()
+      )
 
     getVolume: () ->
       return new Promise.resolve @_volume
-
-    getInput: () ->
-      return new Promise.resolve @_input

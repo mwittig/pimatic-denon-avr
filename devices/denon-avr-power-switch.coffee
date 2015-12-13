@@ -2,6 +2,7 @@ module.exports = (env) ->
 
   Promise = env.require 'bluebird'
   _ = env.require 'lodash'
+  commons = require('pimatic-plugin-commons')(env)
 
   # Device class representing the power switch of the Denon AVR
   class DenonAvrPowerSwitch extends env.devices.PowerSwitch
@@ -16,33 +17,24 @@ module.exports = (env) ->
       @interval = config.interval
       @debug = @plugin.debug || false
       @plugin.on 'response', @_onResponseHandler()
-      @_state = false;
+      @_state = false
+      @_base = commons.base @, 'DenonAvrPowerSwitch'
       super()
       process.nextTick () =>
         @_requestUpdate()
 
-    _scheduleUpdate: () ->
-      if @_timeoutObject?
-        clearTimeout @_timeoutObject
-
-      if @interval > 0
-        @_timeoutObject = setTimeout( =>
-          @_timeoutObject = null
-          @_requestUpdate()
-        , @interval * 1000
-        )
-
     _requestUpdate: () ->
+      @_base.debug "Requesting update"
       @plugin.connect().then =>
         @plugin.sendRequest 'PW', '?'
       .catch (error) =>
-        env.logger.debug "Error:", error
+        @_base.error "Error:", error
       .finally () =>
-        @_scheduleUpdate()
+        @_base.scheduleUpdate @_requestUpdate, @interval * 1000
 
     _onResponseHandler: () ->
       return (response) =>
-        env.logger.debug "Response", response if @debug
+        @_base.debug "Response", response.matchedResults
         if response.command is 'PW'
           @_setState if response.param is 'ON' then true else false
 
