@@ -2,7 +2,7 @@
 module.exports = (env) ->
 
   Promise = require 'bluebird'
-  retry = require 'bluebird-retry'
+  retry = require('promise-retryer')(Promise)
   net = require 'net'
   _ = env.require 'lodash'
   commons = require('pimatic-plugin-commons')(env)
@@ -107,28 +107,33 @@ module.exports = (env) ->
         reject(error)
 
     _connect: () ->
-      return @connectRequest = settled(@connectRequest).then () =>
-        return new Promise (resolve, reject) =>
-          if not @isConnected
-            @socket = new net.Socket allowHalfOpen: false
-            @socket.setEncoding 'utf8'
-            @socket.setNoDelay true
-            @socket.setTimeout 10000
-            @socket.removeAllListeners()
-            @socket.on 'data', @_onDataHandler()
-            @socket.once 'timeout', @_onTimeoutHandler()
-            @socket.once 'close', @_onCloseHandler()
-            @socket.on 'error', @_onErrorHandler()
-            @socket.once 'connect', @_onConnectedSuccessHandler(resolve)
-            @socket.once 'error', @_onConnectedErrorHandler(reject)
-            @_base.debug "Trying to connect to #{@host}:#{@port}"
-            @socket.connect @port, @host
-          else
-            resolve()
+      return new Promise (resolve, reject) =>
+        if not @isConnected
+          @socket = new net.Socket allowHalfOpen: false
+          @socket.setEncoding 'utf8'
+          @socket.setNoDelay true
+          @socket.setTimeout 10000
+          @socket.removeAllListeners()
+          @socket.on 'data', @_onDataHandler()
+          @socket.once 'timeout', @_onTimeoutHandler()
+          @socket.once 'close', @_onCloseHandler()
+          @socket.on 'error', @_onErrorHandler()
+          @socket.once 'connect', @_onConnectedSuccessHandler(resolve)
+          @socket.once 'error', @_onConnectedErrorHandler(reject)
+          @_base.debug "Trying to connect to #{@host}:#{@port}"
+          @socket.connect @port, @host
+        else
+          resolve()
 
 
     connect: () ->
-      return retry(@_connect.bind @, {max_tries: 20, interval: 1000})
+      return @connectRequest = settled(@connectRequest).then () =>
+        retry.run({
+          maxRetries: 20
+          delay: 1000
+          promise: @_connect.bind @
+        }).catch (error) =>
+          Promise.reject "Unable to connect to #{@host}:#{@port} (retries: 20): " + error
 
 
     _write: (cmd) ->

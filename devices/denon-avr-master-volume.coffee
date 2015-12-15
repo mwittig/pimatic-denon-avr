@@ -48,10 +48,9 @@ module.exports = (env) ->
     _onResponseHandler: () ->
       return (response) =>
         @_base.debug "Response", response.matchedResults
-        switch response.command
-          when 'MV'
-            @_setDimlevel @_volumeParamToLevel response.param
-            @_setVolume response.param
+        if response.command is 'MV'
+          @_setDimlevel @_volumeParamToLevel response.param
+          @_setVolume response.param
 
     _volumeToDecibel: (volume, zeroDB=80) ->
       return @_volumeToNumber(volume) - zeroDB

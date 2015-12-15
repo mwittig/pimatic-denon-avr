@@ -101,7 +101,7 @@ The device has the following configuration properties:
 
 The Master Volume can be used to change the absolute master volume. This device can only
 be used with AVRs which support absolute volume control on a scale from 0-98. As some
-AVRs already stop at lower maximum volume the `maxAbsoluteVolume` property is provided
+AVRs already stop at a lower maximum volume the `maxAbsoluteVolume` property is provided
 (see properties table below).
 
     {

@@ -39,8 +39,8 @@
   "configSchema": "denon-avr-config-schema.coffee",
   "dependencies": {
     "bluebird": "^3.0.6",
-    "bluebird-retry": "^0.5.2",
-    "pimatic-plugin-commons": "^0.8.2"
+    "pimatic-plugin-commons": "^0.8.3",
+    "promise-retryer": "0.0.1"
   },
   "optionalDependencies": {},
   "peerDependencies": {

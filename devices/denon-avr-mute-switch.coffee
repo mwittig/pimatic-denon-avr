@@ -38,10 +38,12 @@ module.exports = (env) ->
         @_base.debug "Response", response.matchedResults
 
         switch response.command
-          when 'MU'
+          when 'MU' then (
             @_setState if response.param is 'ON' then true else false
-          when 'PW'
+          )
+          when 'PW' then (
             @_requestUpdate()
+          )
 
     changeStateTo: (newState) ->
       return new Promise (resolve) =>

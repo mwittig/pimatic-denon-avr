@@ -55,15 +55,18 @@ module.exports = (env) ->
       return (response) =>
         @_base.debug "Response", response.matchedResults
         switch response.command
-          when 'PW'
+          when 'PW' then (
             @_setPresence if response.param is 'ON' then true else false
-          when 'SI'
+          )
+          when 'SI' then (
             @_base.setAttribute 'input', response.param
-          when 'MV'
+          )
+          when 'MV' then (
             if @volumeDecibel
               @_base.setAttribute 'volume', @_volumeToDecibel response.param
             else
               @_base.setAttribute 'volume', @_volumeToNumber response.param
+          )
 
     _volumeToDecibel: (volume, zeroDB=80) ->
       return @_volumeToNumber(volume) - zeroDB
