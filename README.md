@@ -1,5 +1,7 @@
 # pimatic-denon-avr
 
+![Icon](https://raw.githubusercontent.com/mwittig/pimatic-denon-avr/master/assets/images/logo-x128.png)
+
 Pimatic plugin to monitor &amp; control a Denon AV receiver over a network connection
 
 ## Status of Implementation
@@ -51,7 +53,7 @@ the master volume and selected input source.
 
     {
           "id": "avr-1",
-          "name": "Denon AVR Status",
+          "name": "AVR Status",
           "class": "DenonAvrPresenceSensor"
     }
 
@@ -69,7 +71,7 @@ AVR configuration you may not be able to switch it on. See the AVR manual for de
 
     {
           "id": "avr-2",
-          "name": "Denon AVR Power",
+          "name": "AVR Power",
           "class": "DenonAvrPowerSwitch"
     }
 
@@ -82,11 +84,13 @@ The device has the following configuration properties:
 
 ### DenonAvrMuteSwitch
 
+![Screenshot](https://raw.githubusercontent.com/mwittig/pimatic-denon-avr/master/assets/screenshots/avr-mute-switch.png)
+
 The Mute Switch can be used to mute or un-mute the master volume.
 
     {
           "id": "avr-3",
-          "name": "Denon AVR Mute",
+          "name": "AVR Mute",
           "class": "DenonAvrMuteSwitch"
     }
 
@@ -99,6 +103,8 @@ The device has the following configuration properties:
 
 ### DenonAvrMasterVolume
 
+![Screenshot](https://raw.githubusercontent.com/mwittig/pimatic-denon-avr/master/assets/screenshots/avr-master-volume.png)
+
 The Master Volume can be used to change the absolute master volume. This device can only
 be used with AVRs which support absolute volume control on a scale from 0-98. As some
 AVRs already stop at a lower maximum volume the `maxAbsoluteVolume` property is provided
@@ -106,7 +112,7 @@ AVRs already stop at a lower maximum volume the `maxAbsoluteVolume` property is 
 
     {
           "id": "avr-4",
-          "name": "Denon AVR Master Volume",
+          "name": "AVR Master Volume",
           "class": "DenonAvrMasterVolume"
     }
 
