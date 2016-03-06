@@ -6,6 +6,7 @@
     "url": "https://github.com/mwittig"
   },
   "main": "denon-avr",
+  "icon": "assets/images/logo.svg",
   "files": [
     "denon-avr.coffee",
     "denon-avr-config-schema.coffee",
