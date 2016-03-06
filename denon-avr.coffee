@@ -17,7 +17,7 @@ module.exports = (env) ->
     VOLUME: /^(MV)([0-9]+)/
     MUTE: /^(MU)([A-Z]+)/
     INPUT: /^(SI)(.+)/
-  settled = (promise) -> Promise.settle([promise])
+  settled = (promise) -> promise.reflect()
   series = (input, mapper) -> Promise.mapSeries(input, mapper)
 
 
