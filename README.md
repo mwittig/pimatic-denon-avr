@@ -1,8 +1,8 @@
 # pimatic-denon-avr
 
-![Icon](https://raw.githubusercontent.com/mwittig/pimatic-denon-avr/master/assets/images/logo-x128.png)
+Pimatic plugin to monitor &amp; control a Denon AV Receiver over a network connection.
 
-Pimatic plugin to monitor &amp; control a Denon AV receiver over a network connection
+![Icon](https://raw.githubusercontent.com/mwittig/pimatic-denon-avr/master/assets/images/logo.png) 
 
 ## Status of Implementation
 
@@ -16,7 +16,7 @@ auto-discovery feature for the upcoming pimatic v0.9.
           "plugin": "denon-avr",
           "host": "avr.fritz.box",
     }
-   
+
 The plugin has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
@@ -28,19 +28,19 @@ The plugin has the following configuration properties:
 
 ## Device Configuration
 
-The following devices can be used. Each device will query the AVR for the status updates at regular time intervals. The 
+The following devices can be used. Each device will query the AVR for the status updates at regular time intervals. The
 default is 60 seconds. **Note, the AVR will only accept a single connection to the control port.** Shorter intervals may
-keep the connection open forever and may block other applications, e.g. remote control applications for the smart 
-phone. If another application occupies the control port forever the status cannot be updated and commands will 
+keep the connection open forever and may block other applications, e.g. remote control applications for the smart
+phone. If another application occupies the control port forever the status cannot be updated and commands will
 result in 'timeout' errors.  
 
-You may realize some strange behaviour like switches or sliders flipping back to their previous position. This 
-is due to the behaviour of the AVR control system. When the AVR is in STANDBY it does not allow changing settings like 
+You may realize some strange behaviour like switches or sliders flipping back to their previous position. This
+is due to the behaviour of the AVR control system. When the AVR is in STANDBY it does not allow changing settings like
 volume, mute, input and will reply with its currently status parameters.
 
 If the power on command is sent to the AVR, it will take up to 2 seconds for the AVR control system to transition to
-the power on state and to accept changing settings. Thus, subsequent commands will be deferred by 2 seconds. You may 
-realize this, for example, if you change the volume immediately after switching power on, it will take 2 seconds 
+the power on state and to accept changing settings. Thus, subsequent commands will be deferred by 2 seconds. You may
+realize this, for example, if you change the volume immediately after switching power on, it will take 2 seconds
 for the volume attribute to update. In rare cases, if the power on procedure takes longer, the slider may flip back
 to its previous position.
 
