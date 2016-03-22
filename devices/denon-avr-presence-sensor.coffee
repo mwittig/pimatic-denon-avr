@@ -13,11 +13,11 @@ module.exports = (env) ->
     # @param [DenonAvrPlugin] plugin   plugin instance
     # @param [Object] lastState state information stored in database
     constructor: (@config, @plugin, lastState) ->
-      @_base = commons.base @, config.class
-      @id = config.id
-      @name = config.name
-      @interval = @_base.normalize config.interval, 10
-      @volumeDecibel = config.volumeDecibel
+      @_base = commons.base @, @config.class
+      @id = @config.id
+      @name = @config.name
+      @interval = @_base.normalize @config.interval, 10
+      @volumeDecibel = @config.volumeDecibel
       @debug = @plugin.debug || false
       @plugin.on 'response', @_onResponseHandler()
       @attributes = _.cloneDeep(@attributes)
