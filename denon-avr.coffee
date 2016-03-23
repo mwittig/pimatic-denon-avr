@@ -6,11 +6,25 @@ module.exports = (env) ->
   net = require 'net'
   _ = env.require 'lodash'
   commons = require('pimatic-plugin-commons')(env)
-  devices = [
-    'denon-avr-presence-sensor'
-    'denon-avr-power-switch'
-    'denon-avr-mute-switch'
-    'denon-avr-master-volume'
+  deviceConfigTemplates = [
+    {
+      "name": "Denon AVR Status",
+      "class": "DenonAvrPresenceSensor",
+      "volumeDecibel": true,
+    },
+    {
+      "name": "Denon AVR Power",
+      "class": "DenonAvrPowerSwitch"
+    },
+    {
+      "name": "Denon AVR Mute",
+      "class": "DenonAvrMuteSwitch"
+    },
+    {
+      "name": "Denon AVR Master Volume",
+      "class": "DenonAvrMasterVolume",
+      "maxAbsoluteVolume": 89.5
+    }
   ]
   commands =
     POWER: /^(PW)([A-Z]+)/
@@ -36,15 +50,32 @@ module.exports = (env) ->
 
       # register devices
       deviceConfigDef = require("./device-config-schema")
-      for device in devices
-        # convert kebap-case to camel-case notation with first character capitalized
-        className = device.replace /(^[a-z])|(\-[a-z])/g, ($1) -> $1.toUpperCase().replace('-','')
-        classType = require('./devices/' + device)(env)
+      for device in deviceConfigTemplates
+        className = device.class
+        # convert camel-case classname to kebap-case filename
+        filename = className.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+        classType = require('./devices/' + filename)(env)
         @_base.debug "Registering device class #{className}"
         @framework.deviceManager.registerDeviceClass(className, {
           configDef: deviceConfigDef[className],
           createCallback: @_callbackHandler(className, classType)
         })
+
+      # auto-discovery
+      @framework.deviceManager.on('discover', (eventData) =>
+        @framework.deviceManager.discoverMessage 'pimatic-denon-avr', 'Searching for AVR controls'
+        for device in deviceConfigTemplates
+          matched = @framework.deviceManager.devicesConfig.some (element, iterator) =>
+            #console.log element.class is device.class, element.class, device.class
+            element.class is device.class
+
+          if not matched
+            process.nextTick @_discoveryCallbackHandler('pimatic-denon-avr', device.name, device)
+      )
+
+    _discoveryCallbackHandler: (pluginName, deviceName, deviceConfig) ->
+      return () =>
+        @framework.deviceManager.discoveredDevice pluginName, deviceName, deviceConfig
 
     _callbackHandler: (className, classType) ->
       # this closure is required to keep the className and classType context as part of the iteration
