@@ -135,16 +135,16 @@ The DenonAvrInputSelector can be used to select the inpit source. Allowed value 
           "class": "DenonAvrInputSelector"
           "buttons": [
                {
-                 input: "TUNER"
+                 "id": "TUNER"
                }
                {
-                 input: "DVD"
+                 "id": "DVD"
                }
                {
-                 input: "TV"
+                 "id": "TV"
                }
                {
-                 input: "MPLAY"
+                 "id": "MPLAY"
                }
           ]
     }

@@ -75,16 +75,16 @@ module.exports = {
         type: "array"
         default: [
           {
-            input: "TUNER"
+            id: "TUNER"
           }
           {
-            input: "DVD"
+            id: "DVD"
           }
           {
-            input: "TV"
+            id: "TV"
           }
           {
-            input: "MPLAY"
+            id: "MPLAY"
           }
         ]
         format: "table"
