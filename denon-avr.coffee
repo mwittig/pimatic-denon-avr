@@ -11,19 +11,23 @@ module.exports = (env) ->
       "name": "Denon AVR Status",
       "class": "DenonAvrPresenceSensor",
       "volumeDecibel": true,
-    },
+    }
     {
       "name": "Denon AVR Power",
       "class": "DenonAvrPowerSwitch"
-    },
+    }
     {
       "name": "Denon AVR Mute",
       "class": "DenonAvrMuteSwitch"
-    },
+    }
     {
       "name": "Denon AVR Master Volume",
       "class": "DenonAvrMasterVolume",
       "maxAbsoluteVolume": 89.5
+    }
+    {
+      "name": "Denon AVR Input Selector",
+      "class": "DenonAvrInputSelector",
     }
   ]
   commands =

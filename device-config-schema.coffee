@@ -60,4 +60,52 @@ module.exports = {
         type: "number"
         default: 60
   }
+  DenonAvrInputSelector: {
+    title: "Denon AVR Input Selector"
+    description: "Denon AVR Input Selector"
+    type: "object"
+    extensions: ["xLink", "xOnLabel", "xOffLabel"]
+    properties:
+      interval:
+        description: "The time interval in seconds (minimum 10) at which the mutr state of the AVR will be read"
+        type: "number"
+        default: 60
+      buttons:
+        description: "The inputs to select from"
+        type: "array"
+        default: [
+          {
+            input: "TUNER"
+          }
+          {
+            input: "DVD"
+          }
+          {
+            input: "TV"
+          }
+          {
+            input: "MPLAY"
+          }
+        ]
+        format: "table"
+        items:
+          type: "object"
+          properties:
+            id:
+              enum: [
+                "CD", "TUNER", "DVD", "BD", "TV", "SAT/CBL", "MPLAY", "GAME", "HDRADIO", "NET",
+                "PANDORA", "SIRIUSXM", "SPOTIFY", "LASTFM", "FLICKR", "IRADIO", "SERVER", "FAVORITES",
+                "AUX1", "AUX2", "AUX3", "AUX4", "AUX5", "AUX6", "AUX7", "BT", "USB", "USB/IPOD",
+                "IPD", "IRP", "FVP",
+              ]
+              description: "The input ids switchable by the AVR"
+            text:
+              type: "string"
+              description: "The button text to be displayed. The id will be displayed if not set"
+              required: false
+            confirm:
+              description: "Ask the user to confirm the input select"
+              type: "boolean"
+              default: false
+  }
 }

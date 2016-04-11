@@ -124,3 +124,35 @@ The device has the following configuration properties:
 | volumeDecibel     | false    | Boolean | If true, the volume is presented in dB, otherwise the absolute level between 00 and 99 is displayed |
 | volumeLimit       | 0        | Number  | If greater than 0, enforce a volume limiter for the maximum volume level |
 | maxAbsoluteVolume | 99       | Number  | Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99 |
+
+## DenonAvrInputSelector
+
+The DenonAvrInputSelector can be used to select the inpit source. Allowed value depend on the AVR model.
+
+ {
+          "id": "avr-5",
+          "name": "AVR Inout Selector",
+          "class": "DenonAvrInputSelector"
+          "buttons": [
+               {
+                 input: "TUNER"
+               }
+               {
+                 input: "DVD"
+               }
+               {
+                 input: "TV"
+               }
+               {
+                 input: "MPLAY"
+               }
+          ]
+    }
+
+The device has the following configuration properties:
+
+| Property          | Default  | Type    | Description                                 |
+|:------------------|:---------|:--------|:--------------------------------------------|
+| interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+| buttons           | see example | Array   | The buttons to display for selection. See device configuration schema for details |
+
