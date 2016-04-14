@@ -38,6 +38,33 @@ module.exports = {
         type: "number"
         default: 99
   },
+  DenonAvrZoneVolume: {
+    title: "Denon AVR Zone Volume"
+    description: "Denon AVR Zone Volume"
+    type: "object"
+    extensions: ["xLink", "xPresentLabel", "xAbsentLabel"]
+    properties:
+      zone:
+        description: "The zone for which volume shall be controlled. If set to MAIN it is equivalent to master volume"
+        enum: ["MAIN", "ZONE2", "ZONE3"]
+        default: "MAIN"
+      interval:
+        description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
+        type: "number"
+        default: 60
+      volumeDecibel:
+        description: "If true, the volume is presented in dB, otherwise relative level between 00 and 99 is displayed"
+        type: "boolean"
+        default: false
+      volumeLimit:
+        description: "If greater than 0, enforce a volume limiter for the maximum volume level"
+        type: "number"
+        default: 0
+      maxAbsoluteVolume:
+        description: "Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99"
+        type: "number"
+        default: 99
+  },
   DenonAvrPowerSwitch: {
     title: "Denon AVR Power Switch"
     description: "Denon AVR Power Switch"
@@ -49,23 +76,46 @@ module.exports = {
         type: "number"
         default: 60
   },
+  DenonAvrZoneSwitch: {
+    title: "Denon AVR Zone Switch"
+    description: "Denon AVR Zone Switch"
+    type: "object"
+    extensions: ["xLink", "xOnLabel", "xOffLabel"]
+    properties:
+      zone:
+        description: "The zone to be controlled"
+        enum: ["MAIN", "ZONE2", "ZONE3"]
+        default: "MAIN"
+      interval:
+        description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
+        type: "number"
+        default: 60
+  },
   DenonAvrMuteSwitch: {
     title: "Denon AVR Mute Switch"
     description: "Denon AVR Mute Switch"
     type: "object"
     extensions: ["xLink", "xOnLabel", "xOffLabel"]
     properties:
+      zone:
+        description: "The zone to be controlled"
+        enum: ["MAIN", "ZONE2", "ZONE3"]
+        default: "MAIN"
       interval:
         description: "The time interval in seconds (minimum 10) at which the mutr state of the AVR will be read"
         type: "number"
         default: 60
-  }
+  },
   DenonAvrInputSelector: {
     title: "Denon AVR Input Selector"
     description: "Denon AVR Input Selector"
     type: "object"
     extensions: ["xLink", "xOnLabel", "xOffLabel"]
     properties:
+      zone:
+        description: "The zone to be controlled"
+        enum: ["MAIN", "ZONE2", "ZONE3"]
+        default: "MAIN"
       interval:
         description: "The time interval in seconds (minimum 10) at which the mutr state of the AVR will be read"
         type: "number"

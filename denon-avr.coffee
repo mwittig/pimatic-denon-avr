@@ -17,12 +17,21 @@ module.exports = (env) ->
       "class": "DenonAvrPowerSwitch"
     }
     {
+      "name": "Denon AVR Zone Switch",
+      "class": "DenonAvrZoneSwitch"
+    }
+    {
       "name": "Denon AVR Mute",
       "class": "DenonAvrMuteSwitch"
     }
     {
       "name": "Denon AVR Master Volume",
       "class": "DenonAvrMasterVolume",
+      "maxAbsoluteVolume": 89.5
+    }
+    {
+      "name": "Denon AVR Zone Volume",
+      "class": "DenonAvrZoneVolume",
       "maxAbsoluteVolume": 89.5
     }
     {
@@ -33,8 +42,14 @@ module.exports = (env) ->
   commands =
     POWER: /^(PW)([A-Z]+)/
     VOLUME: /^(MV)([0-9]+)/
-    MUTE: /^(MU)([A-Z]+)/
+    MAINMUTE: /^(MU)([A-Z]+)/
+    Z2MUTE: /^(Z2MU)([A-Z]+)/
+    Z3MUTE: /^(Z3MU)([A-Z]+)/
     INPUT: /^(SI)(.+)/
+    MAIN: /^(ZM)(.+)/
+    ZONE2: /^(Z2)(.+)/
+    ZONE3: /^(Z3)(.+)/
+
   settled = (promise) -> promise.reflect()
   series = (input, mapper) -> Promise.mapSeries(input, mapper)
 

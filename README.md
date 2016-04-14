@@ -6,9 +6,15 @@ Pimatic plugin to monitor &amp; control a Denon AV Receiver over a network conne
 
 ## Status of Implementation
 
-The current implementation is pretty basic, but robust. Additional features can be added easily
-and I am happy to do this on demand. Apart from this, I am planning to add an
-auto-discovery feature for the upcoming pimatic v0.9.
+Since the first release the following features have been implemented:
+* support for input selection
+* support for zones
+* auto-discovery for pimatic 0.9
+
+Planned features:
+* add HTTP transport as an alternative to using telnet
+
+Additional features can be added easily and I am happy to do this on demand. 
 
 ## Plugin Configuration
 
@@ -81,6 +87,25 @@ The device has the following configuration properties:
 |:------------------|:---------|:--------|:--------------------------------------------|
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 
+### DenonAvrZoneSwitch
+
+The Zone Switch can be used to switch a zone of the AVR on or off if multiple zones are supported and setup for the receiver. 
+See the AVR manual for details.
+
+    {
+          "id": "avr-2",
+          "name": "AVR Zone 2",
+          "class": "DenonAvrZoneSwitch"
+          "zone": "ZONE2"
+    }
+
+The device has the following configuration properties:
+
+| Property          | Default  | Type    | Description                                 |
+|:------------------|:---------|:--------|:--------------------------------------------|
+| zone              | "MAIN"   | enum    | The zone to be switched on and off, one of "MAIN", "ZONE2", or "ZONE3" |
+| interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+
 
 ### DenonAvrMuteSwitch
 
@@ -98,6 +123,7 @@ The device has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
+| zone              | "MAIN"   | enum    | The zone to be muted, one of "MAIN", "ZONE2", or "ZONE3" |
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 
 
@@ -124,6 +150,27 @@ The device has the following configuration properties:
 | volumeDecibel     | false    | Boolean | If true, the volume is presented in dB, otherwise the absolute level between 00 and 99 is displayed |
 | volumeLimit       | 0        | Number  | If greater than 0, enforce a volume limiter for the maximum volume level |
 | maxAbsoluteVolume | 99       | Number  | Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99 |
+
+### DenonAvrZoneVolume
+
+The Zone Volume can be used to change the  zone volume. 
+
+    {
+          "id": "avr-4",
+          "name": "AVR Zone Volume",
+          "class": "DenonAvrZoneVolume"
+    }
+
+The device has the following configuration properties:
+
+| Property          | Default  | Type    | Description                                 |
+|:------------------|:---------|:--------|:--------------------------------------------|
+| zone              | "MAIN"   | enum    | The zone for which volume shall be controlled, one of "MAIN", "ZONE2", or "ZONE3". If set to MAIN it is equivalent to master volume |
+| interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+| volumeDecibel     | false    | Boolean | If true, the volume is presented in dB, otherwise the absolute level between 00 and 99 is displayed |
+| volumeLimit       | 0        | Number  | If greater than 0, enforce a volume limiter for the maximum volume level |
+| maxAbsoluteVolume | 99       | Number  | Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99 |
+
 
 ## DenonAvrInputSelector
 
@@ -153,6 +200,7 @@ The device has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
+| zone              | "MAIN"   | enum    | The zone to select input for, one of "MAIN", "ZONE2", or "ZONE3" |
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 | buttons           | see example | Array   | The buttons to display for selection. See device configuration schema for details |
 

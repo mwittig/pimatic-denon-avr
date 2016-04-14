@@ -5,9 +5,9 @@ module.exports = (env) ->
   commons = require('pimatic-plugin-commons')(env)
 
   # Device class representing an the power state of the Denon AVR
-  class DenonAvrMasterVolume extends env.devices.DimmerActuator
+  class DenonAvrZoneVolume extends env.devices.DimmerActuator
 
-    # Create a new DenonAvrMasterVolume device
+    # Create a new DenonAvrZoneVolume device
     # @param [Object] config    device configuration
     # @param [DenonAvrPlugin] plugin   plugin instance
     # @param [Object] lastState state information stored in database
@@ -15,6 +15,14 @@ module.exports = (env) ->
       @_base = commons.base @, @config.class
       @id = @config.id
       @name = @config.name
+      @zoneCmd = @zoneCmd
+      switch @config.zone
+        when 'ZONE2' then (
+          @zoneCmd = 'Z2'
+        )
+        when 'ZONE3' then (
+          @zoneCmd = 'Z3'
+        )
       @interval = @_base.normalize @config.interval, 10
       @volumeDecibel = @config.volumeDecibel
       @volumeLimit = @_base.normalize @config.volumeLimit, 0, 99
@@ -39,7 +47,7 @@ module.exports = (env) ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
       @plugin.connect().then () =>
-        @plugin.sendRequest 'MV', '?'
+        @plugin.sendRequest @zoneCmd, '?'
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
@@ -48,7 +56,7 @@ module.exports = (env) ->
     _onResponseHandler: () ->
       return (response) =>
         @_base.debug "Response", response.matchedResults
-        if response.command is 'MV'
+        if response.command is @zoneCmd and not isNaN response.param
           @_setDimlevel @_volumeParamToLevel response.param
           @_setVolume response.param
 
@@ -82,7 +90,7 @@ module.exports = (env) ->
           newLevel = @volumeLimit
 
         @plugin.connect().then =>
-          @plugin.sendRequest 'MV', @_levelToVolumeParam (newLevel)
+          @plugin.sendRequest @zoneCmd, @_levelToVolumeParam (newLevel)
           @_setDimlevel newLevel
           @_requestUpdate()
           resolve()

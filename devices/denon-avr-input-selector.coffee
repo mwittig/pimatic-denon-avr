@@ -15,6 +15,14 @@ module.exports = (env) ->
       @_base = commons.base @, @config.class
       @id = @config.id
       @name = @config.name
+      @zoneCmd = 'SI'
+      switch @config.zone
+        when 'ZONE2' then (
+          @zoneCmd = 'Z2'
+        )
+        when 'ZONE3' then (
+          @zoneCmd = 'Z3'
+        )
       @interval = @_base.normalize @config.interval, 10
       @debug = @plugin.debug || false
       for b in @config.buttons
@@ -28,7 +36,7 @@ module.exports = (env) ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
       @plugin.connect().then =>
-        @plugin.sendRequest 'SI', '?'
+        @plugin.sendRequest @zoneCmd, '?'
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
@@ -37,7 +45,7 @@ module.exports = (env) ->
     _onResponseHandler: () ->
       return (response) =>
         @_base.debug "Response", response.matchedResults
-        if response.command is 'SI' and response.param isnt @_lastPressedButton
+        if response.command is @zoneCmd and response.param isnt @_lastPressedButton and response.param isnt 'OFF'
           @_lastPressedButton = response.param
           @emit 'button', response.param
 
@@ -47,7 +55,7 @@ module.exports = (env) ->
           @_lastPressedButton = b.id
           @emit 'button', b.id
           return @plugin.connect().then =>
-            @plugin.sendRequest 'SI', b.id
+            @plugin.sendRequest @zoneCmd, b.id
       throw new Error("No button with the id #{buttonId} found")
 
     getState: () ->
