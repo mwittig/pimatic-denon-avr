@@ -204,3 +204,12 @@ The device has the following configuration properties:
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 | buttons           | see example | Array   | The buttons to display for selection. See device configuration schema for details |
 
+## History
+
+See [Release History](https://github.com/mwittig/pimatic-denon-avr/blob/master/HISTORY.md).
+
+## License 
+
+Copyright (c) 2015-2016, Marcus Wittig and contributors. All rights reserved.
+
+[AGPL-3.0](https://github.com/mwittig/pimatic-denon-avr/blob/master/LICENSE)
