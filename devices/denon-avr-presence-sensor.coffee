@@ -39,6 +39,9 @@ module.exports = (env) ->
       process.nextTick () =>
         @_requestUpdate()
 
+    destroy: () ->
+      @_base.cancelUpdate()
+
     _requestUpdate: () ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
