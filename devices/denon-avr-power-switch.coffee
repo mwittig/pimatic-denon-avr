@@ -25,6 +25,7 @@ module.exports = (env) ->
 
     destroy: () ->
       @_base.cancelUpdate()
+      super()
 
     _requestUpdate: () ->
       @_base.cancelUpdate()
