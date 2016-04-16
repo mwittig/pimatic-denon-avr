@@ -73,7 +73,7 @@ The device has the following configuration properties:
 ### DenonAvrPowerSwitch
 
 The Power Switch can be used to switch the AVR on or off (standby) mode. Depending on your
-AVR configuration you may not be able to switch it on. See the AVR manual for details.
+AVR configuration you may not be able to switch it on again. See the AVR manual for details.
 
     {
           "id": "avr-2",
@@ -176,7 +176,7 @@ The device has the following configuration properties:
 
 The DenonAvrInputSelector can be used to select the inpit source. Allowed value depend on the AVR model.
 
- {
+    {
           "id": "avr-5",
           "name": "AVR Inout Selector",
           "class": "DenonAvrInputSelector"
