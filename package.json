@@ -14,6 +14,7 @@
     "devices",
     "assets",
     "LICENSE",
+    "HISTORY.md",
     "README.md"
   ],
   "keywords": [
@@ -21,7 +22,7 @@
     "Pioneer AVR",
     "Pimatic"
   ],
-  "version": "0.8.7",
+  "version": "0.8.8",
   "homepage": "https://github.com/mwittig/pimatic-denon-avr/tree/master",
   "private": false,
   "repository": {
