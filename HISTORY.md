@@ -1,5 +1,8 @@
 # Release History
 
+* 20160419, V0.8.9
+    * Added call super() on destroy()
+    
 * 20160416, V0.8.8
     * Added support for controlling multiple zones
     * Added DenonAvrInputSelector, DenonAvrZoneSwitch, DenonAvrZoneVolume device classes
