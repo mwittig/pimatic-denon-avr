@@ -1,5 +1,9 @@
 # pimatic-denon-avr
 
+[![Npm Version](https://badge.fury.io/js/pimatic-denon-avr.svg)](http://badge.fury.io/js/pimatic-denon-avr)
+[![Build Status](https://travis-ci.org/mwittig/pimatic-denon-avr.svg?branch=master)](https://travis-ci.org/mwittig/pimatic-denon-avr)
+[![Dependency Status](https://david-dm.org/mwittig/pimatic-denon-avr.svg)](https://david-dm.org/mwittig/pimatic-denon-avr)
+
 Pimatic plugin to monitor &amp; control a Denon AV Receiver over a network connection.
 
 ![Icon](https://raw.githubusercontent.com/mwittig/pimatic-denon-avr/master/assets/images/logo.png) 
