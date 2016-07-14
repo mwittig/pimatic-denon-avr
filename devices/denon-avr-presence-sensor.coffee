@@ -63,7 +63,7 @@ module.exports = (env) ->
             @_setPresence if response.param is 'ON' then true else false
           )
           when 'SI' then (
-            @_base.setAttribute 'input', response.param
+            @_base.setAttribute 'input', response.param, true
           )
           when 'MV' then (
             if @volumeDecibel
