@@ -4,6 +4,7 @@
     * Dependency Update for pimatic-plugin-commons which corrects handling of continuous attribute values
     * Removed dependency on bluebird as pimatic 0.9 support bluebird v3.x
     * Reversed order of release history
+    * Removed Travis build for node.js 0.10
     
 * 20160419, V0.8.9
     * Added call super() on destroy()
