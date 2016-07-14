@@ -1,7 +1,7 @@
 # Denon AVR plugin
 module.exports = (env) ->
 
-  Promise = require 'bluebird'
+  Promise = env.require 'bluebird'
   retry = require('promise-retryer')(Promise)
   net = require 'net'
   _ = env.require 'lodash'
