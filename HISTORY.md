@@ -1,5 +1,10 @@
 # Release History
 
+* 20160714, V0.9.0
+    * Dependency Update for pimatic-plugin-commons which corrects handling of continuous attribute values
+    * Removed dependency on bluebird as pimatic 0.9 support bluebird v3.x
+    * Reversed order of release history
+    
 * 20160419, V0.8.9
     * Added call super() on destroy()
     
