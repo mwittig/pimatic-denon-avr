@@ -67,14 +67,13 @@ module.exports = (env) ->
         message: "#{command}#{param}"
 
     _requestUpdate: (command, param="") =>
-      console.log command, param
-      console.log "http://#{@host}:#{@port}/goform/#{@_mapZoneToUrlPath command}XmlStatusLite.xml"
-      delete @scheduledUpdates[@_mapZoneToKey command] if @scheduledUpdates[@_mapZoneToKey command]?
+      @base.debug "http://#{@host}:#{@port}/goform/#{@_mapZoneToUrlPath command}XmlStatusLite.xml"
       return rest.get "http://#{@host}:#{@port}/goform/#{@_mapZoneToUrlPath command}XmlStatusLite.xml"
       .then (response) =>
         if response.data.length isnt 0
           parseXmlString response.data
           .then (dom) =>
+            delete @scheduledUpdates[@_mapZoneToKey command] if @scheduledUpdates[@_mapZoneToKey command]?
             prefix = @_mapZoneToPrefix command
             @_triggerResponse "#{prefix}MU", dom.item.Mute[0].value[0].toUpperCase()
             @_triggerResponse "#{prefix}PW", dom.item.Power[0].value[0].toUpperCase()
@@ -86,6 +85,8 @@ module.exports = (env) ->
 
     _scheduleUpdate: (command, param="") ->
       if not @scheduledUpdates[@_mapZoneToKey command]?
+        @base.debug "Scheduling update for zone #{@_mapZoneToKey command}"
+        @scheduledUpdates[@_mapZoneToKey command] = true
         @base.scheduleUpdate @_requestUpdate, 1000, command, param
       return Promise.resolve()
 
