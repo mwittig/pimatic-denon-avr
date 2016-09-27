@@ -19,7 +19,7 @@ module.exports = (env) ->
       @interval = @_base.normalize @config.interval, 10
       @volumeDecibel = @config.volumeDecibel
       @debug = @plugin.debug || false
-      @plugin.on 'response', @_onResponseHandler()
+      @plugin.protocolHandler.on 'response', @_onResponseHandler()
       @attributes = _.cloneDeep(@attributes)
       @attributes.volume = {
         description: "Volume"
@@ -46,10 +46,11 @@ module.exports = (env) ->
     _requestUpdate: () ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
-      @plugin.connect().then () =>
-        @plugin.sendRequest 'PW', '?'
-        @plugin.sendRequest 'SI', '?'
-        @plugin.sendRequest 'MV', '?'
+      Promise.all([
+        @plugin.protocolHandler.sendRequest 'PW', '?'
+        @plugin.protocolHandler.sendRequest 'SI', '?'
+        @plugin.protocolHandler.sendRequest 'MV', '?'
+      ])
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>

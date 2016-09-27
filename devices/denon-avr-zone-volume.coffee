@@ -15,7 +15,7 @@ module.exports = (env) ->
       @_base = commons.base @, @config.class
       @id = @config.id
       @name = @config.name
-      @zoneCmd = @zoneCmd
+      @zoneCmd = 'MV'
       switch @config.zone
         when 'ZONE2' then (
           @zoneCmd = 'Z2'
@@ -28,7 +28,7 @@ module.exports = (env) ->
       @volumeLimit = @_base.normalize @config.volumeLimit, 0, 99
       @maxAbsoluteVolume = @_base.normalize @config.maxAbsoluteVolume, 0, 99
       @debug = @plugin.debug || false
-      @plugin.on 'response', @_onResponseHandler()
+      @plugin.protocolHandler.on 'response', @_onResponseHandler()
       @attributes = _.cloneDeep(@attributes)
       @attributes.volume = {
         description: "Volume"
@@ -50,8 +50,7 @@ module.exports = (env) ->
     _requestUpdate: () ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
-      @plugin.connect().then () =>
-        @plugin.sendRequest @zoneCmd, '?'
+      @plugin.protocolHandler.sendRequest @zoneCmd, '?'
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
@@ -93,8 +92,7 @@ module.exports = (env) ->
         if @volumeLimit > 0 and newLevel > @volumeLimit
           newLevel = @volumeLimit
 
-        @plugin.connect().then =>
-          @plugin.sendRequest @zoneCmd, @_levelToVolumeParam (newLevel)
+        @plugin.protocolHandler.sendRequest(@zoneCmd, @_levelToVolumeParam (newLevel)).then =>
           @_setDimlevel newLevel
           @_requestUpdate()
           resolve()

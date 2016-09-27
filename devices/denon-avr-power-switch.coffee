@@ -17,7 +17,7 @@ module.exports = (env) ->
       @name = @config.name
       @interval = @_base.normalize @config.interval, 10
       @debug = @plugin.debug || false
-      @plugin.on 'response', @_onResponseHandler()
+      @plugin.protocolHandler.on 'response', @_onResponseHandler()
       @_state = false
       super()
       process.nextTick () =>
@@ -30,8 +30,7 @@ module.exports = (env) ->
     _requestUpdate: () ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
-      @plugin.connect().then =>
-        @plugin.sendRequest 'PW', '?'
+      @plugin.protocolHandler.sendRequest 'PW', '?'
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
@@ -45,8 +44,7 @@ module.exports = (env) ->
 
     changeStateTo: (newState) ->
       return new Promise (resolve) =>
-        @plugin.connect().then =>
-          @plugin.sendRequest 'PW', if newState then 'ON' else 'STANDBY'
+        @plugin.protocolHandler.sendRequest('PW', if newState then 'ON' else 'STANDBY').then =>
           @_setState newState
           @_requestUpdate()
           resolve()

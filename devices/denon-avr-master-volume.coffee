@@ -20,7 +20,7 @@ module.exports = (env) ->
       @volumeLimit = @_base.normalize @config.volumeLimit, 0, 99
       @maxAbsoluteVolume = @_base.normalize @config.maxAbsoluteVolume, 0, 99
       @debug = @plugin.debug || false
-      @plugin.on 'response', @_onResponseHandler()
+      @plugin.protocolHandler.on 'response', @_onResponseHandler()
       @attributes = _.cloneDeep(@attributes)
       @attributes.volume = {
         description: "Volume"
@@ -42,8 +42,7 @@ module.exports = (env) ->
     _requestUpdate: () ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
-      @plugin.connect().then () =>
-        @plugin.sendRequest 'MV', '?'
+      @plugin.protocolHandler.sendRequest 'MV', '?'
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
@@ -85,11 +84,11 @@ module.exports = (env) ->
         if @volumeLimit > 0 and newLevel > @volumeLimit
           newLevel = @volumeLimit
 
-        @plugin.connect().then =>
-          @plugin.sendRequest 'MV', @_levelToVolumeParam (newLevel)
-          @_setDimlevel newLevel
-          @_requestUpdate()
-          resolve()
+        @plugin.protocolHandler.sendRequest('PW', 'ON').then =>
+          @plugin.protocolHandler.sendRequest('MV', @_levelToVolumeParam(newLevel)).then =>
+            @_setDimlevel newLevel
+            @_requestUpdate()
+            resolve()
 
     getVolume: () ->
       return new Promise.resolve @_volume

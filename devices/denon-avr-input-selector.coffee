@@ -27,7 +27,7 @@ module.exports = (env) ->
       @debug = @plugin.debug || false
       for b in @config.buttons
         b.text = b.id unless b.text?
-      @plugin.on 'response', @_onResponseHandler()
+      @plugin.protocolHandler.on 'response', @_onResponseHandler()
       super(@config)
       process.nextTick () =>
         @_requestUpdate()
@@ -39,8 +39,7 @@ module.exports = (env) ->
     _requestUpdate: () ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
-      @plugin.connect().then =>
-        @plugin.sendRequest @zoneCmd, '?'
+      @plugin.protocolHandler.sendRequest @zoneCmd, '?'
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
@@ -58,8 +57,9 @@ module.exports = (env) ->
         if b.id is buttonId
           @_lastPressedButton = b.id
           @emit 'button', b.id
-          return @plugin.connect().then =>
-            @plugin.sendRequest @zoneCmd, b.id
+          return @plugin.protocolHandler.sendRequest(@zoneCmd, b.id).then =>
+            @_requestUpdate()
+
       throw new Error("No button with the id #{buttonId} found")
 
     getState: () ->
