@@ -50,7 +50,7 @@ module.exports = (env) ->
     _mapZoneToKey: (command) ->
       switch command[...2]
         when 'Z2' then return 'zone2'
-        when 'Z3' then return 'zone2'
+        when 'Z3' then return 'zone3'
         else return 'main'
 
     _triggerResponse: (command, param) ->
