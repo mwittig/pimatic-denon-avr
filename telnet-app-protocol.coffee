@@ -10,6 +10,7 @@ module.exports = (env) ->
   commands =
     POWER: /^(PW)([A-Z]+)/
     VOLUME: /^(MV)([0-9]+)/
+    MAXVOLUME: /^(MVMAX)[ ]{0,1}([0-9]+)/
     MAINMUTE: /^(MU)([A-Z]+)/
     Z2MUTE: /^(Z2MU)([A-Z]+)/
     Z3MUTE: /^(Z3MU)([A-Z]+)/
