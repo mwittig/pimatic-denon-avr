@@ -62,6 +62,8 @@ module.exports = (env) ->
         if response.command is @zoneCmd and not isNaN response.param
           @_setDimlevel @_volumeParamToLevel response.param
           @_setVolume response.param
+        else if response.command is 'MVMAX'
+          @maxAbsoluteVolume = Math.min @maxAbsoluteVolume, 0 + response.param
 
     _volumeToDecibel: (volume, zeroDB=80) ->
       return @_volumeToNumber(volume) - zeroDB
@@ -80,12 +82,12 @@ module.exports = (env) ->
         @_base.setAttribute 'volume', @_volumeToNumber volume
 
     _levelToVolumeParam: (level) ->
-      num = Math.floor @maxAbsoluteVolume * level / 100
+      num = Math.round @maxAbsoluteVolume * level / 100
       return if num < 10 then "0" + num else num + ""
 
     _volumeParamToLevel: (param) ->
       num = @_volumeToNumber param
-      return Math.floor num * 100 / @maxAbsoluteVolume
+      return Math.min 100, Math.round(num * 100 / @maxAbsoluteVolume)
 
     changeDimlevelTo: (newLevel) ->
       return new Promise (resolve) =>
