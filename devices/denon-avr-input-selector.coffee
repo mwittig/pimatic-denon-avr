@@ -27,25 +27,27 @@ module.exports = (env) ->
       @debug = @plugin.debug || false
       for b in @config.buttons
         b.text = b.id unless b.text?
-      @plugin.protocolHandler.on 'response', @_onResponseHandler()
+      @responseHandler = @_createResponseHandler()
+      @plugin.protocolHandler.on 'response', @responseHandler
       super(@config)
       process.nextTick () =>
-        @_requestUpdate()
+        @_requestUpdate true
 
     destroy: () ->
       @_base.cancelUpdate()
+      @plugin.protocolHandler.removeListener 'response', @responseHandler
       super()
 
-    _requestUpdate: () ->
+    _requestUpdate: (immediate=false) ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
-      @plugin.protocolHandler.sendRequest @zoneCmd, '?'
+      @plugin.protocolHandler.sendRequest @zoneCmd, '?', immediate
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
-        @_base.scheduleUpdate @_requestUpdate, @interval * 1000
+        @_base.scheduleUpdate @_requestUpdate, @interval * 1000, true
 
-    _onResponseHandler: () ->
+    _createResponseHandler: () ->
       return (response) =>
         @_base.debug "Response", response.matchedResults
         if response.command is @zoneCmd and response.param isnt @_lastPressedButton and response.param isnt 'OFF'

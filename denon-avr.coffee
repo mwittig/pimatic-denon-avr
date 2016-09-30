@@ -38,20 +38,6 @@ module.exports = (env) ->
       "class": "DenonAvrInputSelector",
     }
   ]
-  commands =
-    POWER: /^(PW)([A-Z]+)/
-    VOLUME: /^(MV)([0-9]+)/
-    MAINMUTE: /^(MU)([A-Z]+)/
-    Z2MUTE: /^(Z2MU)([A-Z]+)/
-    Z3MUTE: /^(Z3MU)([A-Z]+)/
-    INPUT: /^(SI)(.+)/
-    MAIN: /^(ZM)(.+)/
-    ZONE2: /^(Z2)(.+)/
-    ZONE3: /^(Z3)(.+)/
-
-  settled = (promise) -> promise.reflect()
-  series = (input, mapper) -> Promise.mapSeries(input, mapper)
-
 
   # ###DenonAvrPlugin class
   class DenonAvrPlugin extends env.plugins.Plugin

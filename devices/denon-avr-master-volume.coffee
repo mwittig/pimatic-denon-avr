@@ -20,7 +20,8 @@ module.exports = (env) ->
       @volumeLimit = @_base.normalize @config.volumeLimit, 0, 99
       @maxAbsoluteVolume = @_base.normalize @config.maxAbsoluteVolume, 0, 99
       @debug = @plugin.debug || false
-      @plugin.protocolHandler.on 'response', @_onResponseHandler()
+      @responseHandler = @_createResponseHandler()
+      @plugin.protocolHandler.on 'response', @responseHandler
       @attributes = _.cloneDeep(@attributes)
       @attributes.volume = {
         description: "Volume"
@@ -33,22 +34,23 @@ module.exports = (env) ->
       @_volume = 0
       super()
       process.nextTick () =>
-        @_requestUpdate()
+        @_requestUpdate true
 
     destroy: () ->
       @_base.cancelUpdate()
+      @plugin.protocolHandler.removeListener 'response', @responseHandler
       super()
 
-    _requestUpdate: () ->
+    _requestUpdate: (immediate=false) ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
-      @plugin.protocolHandler.sendRequest 'MV', '?'
+      @plugin.protocolHandler.sendRequest 'MV', '?', immediate
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
-        @_base.scheduleUpdate(@_requestUpdate, @interval * 1000)
+        @_base.scheduleUpdate @_requestUpdate, @interval * 1000, true
 
-    _onResponseHandler: () ->
+    _createResponseHandler: () ->
       return (response) =>
         @_base.debug "Response", response.matchedResults
         if response.command is 'MV'

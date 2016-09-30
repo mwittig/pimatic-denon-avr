@@ -7,21 +7,6 @@ module.exports = (env) ->
   retry = require('promise-retryer')(Promise)
   commons = require('pimatic-plugin-commons')(env)
 
-  commands =
-    POWER: /^(PW)([A-Z]+)/
-    VOLUME: /^(MV)([0-9]+)/
-    MAINMUTE: /^(MU)([A-Z]+)/
-    Z2MUTE: /^(Z2MU)([A-Z]+)/
-    Z3MUTE: /^(Z3MU)([A-Z]+)/
-    INPUT: /^(SI)(.+)/
-    MAIN: /^(ZM)(.+)/
-    ZONE2: /^(Z2)(.+)/
-    ZONE3: /^(Z3)(.+)/
-
-  settled = (promise) -> promise.reflect()
-  series = (input, mapper) -> Promise.mapSeries(input, mapper)
-
-
   # ###DenonAvrPlugin class
   class HttpAppProtocol extends require('events').EventEmitter
     constructor: (@config) ->
@@ -30,6 +15,8 @@ module.exports = (env) ->
       @port = @config.port || 80
       @debug = @config.debug || false
       @base = commons.base @, 'HttpAppProtocol'
+      @on "newListener", =>
+        @base.debug "Status response event listeners: #{1 + @listenerCount 'response'}"
 
     pause: (ms=50) ->
       @base.debug "Pausing:", ms, "ms"
@@ -41,19 +28,20 @@ module.exports = (env) ->
         when 'Z3' then return 'formZone3_Zone3'
         else return 'formMainZone_MainZone'
 
-    _mapZoneToPrefix: (command) ->
+    _mapZoneToCommandPrefix: (command) ->
       switch command[...2]
         when 'Z2' then return 'Z2'
         when 'Z3' then return 'Z3'
         else return ''
 
-    _mapZoneToKey: (command) ->
+    _mapZoneToObjectKey: (command) ->
       switch command[...2]
         when 'Z2' then return 'zone2'
         when 'Z3' then return 'zone3'
         else return 'main'
 
     _triggerResponse: (command, param) ->
+      # emulate the regex matcher of telnet transport - should be refactored
       @emit 'response',
         matchedResults: [
           "#{command}#{param}"
@@ -71,26 +59,36 @@ module.exports = (env) ->
       return rest.get "http://#{@host}:#{@port}/goform/#{@_mapZoneToUrlPath command}XmlStatusLite.xml"
       .then (response) =>
         if response.data.length isnt 0
+          @base.debug response.data
           parseXmlString response.data
           .then (dom) =>
-            delete @scheduledUpdates[@_mapZoneToKey command] if @scheduledUpdates[@_mapZoneToKey command]?
-            prefix = @_mapZoneToPrefix command
+            prefix = @_mapZoneToCommandPrefix command
             @_triggerResponse "#{prefix}MU", dom.item.Mute[0].value[0].toUpperCase()
             @_triggerResponse "#{prefix}PW", dom.item.Power[0].value[0].toUpperCase()
-            volume = parseInt dom.item.MasterVolume[0].value[0], 10
-            if dom.item.VolumeDisplay[0].value[0].toUpperCase() is 'ABSOLUTE'
-              volume += 80
-            @_triggerResponse "#{prefix}MV", volume
+            volume = parseInt(dom.item.MasterVolume[0].value[0], 10)
+            if not isNaN volume
+              if dom.item.VolumeDisplay[0].value[0].toUpperCase() is 'ABSOLUTE'
+                volume += 80
+              @_triggerResponse "#{prefix}MV", volume
             @_triggerResponse "#{prefix}SI", dom.item.InputFuncSelect[0].value[0].toUpperCase()
+        else
+          throw new Error "Empty result received for status request"
+      .finally =>
+        delete @scheduledUpdates[@_mapZoneToObjectKey command] if @scheduledUpdates[@_mapZoneToObjectKey command]?
 
-    _scheduleUpdate: (command, param="") ->
-      if not @scheduledUpdates[@_mapZoneToKey command]?
-        @base.debug "Scheduling update for zone #{@_mapZoneToKey command}"
-        @scheduledUpdates[@_mapZoneToKey command] = true
-        @base.scheduleUpdate @_requestUpdate, 1000, command, param
+    _scheduleUpdate: (command, param="", immediate) ->
+      timeout=1500
+      if not @scheduledUpdates[@_mapZoneToObjectKey command]?
+        @base.debug "Scheduling update for zone #{@_mapZoneToObjectKey command}"
+        @scheduledUpdates[@_mapZoneToObjectKey command] = true
+        timeout=0 if immediate
+      else
+        @base.debug "Re-scheduling update for zone #{@_mapZoneToObjectKey command}"
+        @base.cancelUpdate()
+      @base.scheduleUpdate @_requestUpdate, timeout, command, param
       return Promise.resolve()
 
-    sendRequest: (command, param="") ->
+    sendRequest: (command, param="", immediate=false) ->
       return new Promise (resolve, reject) =>
         if param isnt '?'
           @base.debug "http://#{@host}:#{@port}/goform/formiPhoneAppDirect.xml?#{command}#{param}"
@@ -98,7 +96,7 @@ module.exports = (env) ->
           .then =>
             @_triggerResponse command, param
         else
-          promise = @_scheduleUpdate command, param
+          promise = @_scheduleUpdate command, param, immediate
 
         promise.then =>
           resolve()
