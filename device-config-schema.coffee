@@ -10,6 +10,7 @@ module.exports = {
         description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
         type: "number"
         default: 60
+        minimum: 10
       volumeDecibel:
         description: "If true, the volume is presented in dB, otherwise relative level between 00 and 99 is displayed"
         type: "boolean"
@@ -25,6 +26,7 @@ module.exports = {
         description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
         type: "number"
         default: 60
+        minimum: 10
       volumeDecibel:
         description: "If true, the volume is presented in dB, otherwise relative level between 00 and 99 is displayed"
         type: "boolean"
@@ -52,6 +54,7 @@ module.exports = {
         description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
         type: "number"
         default: 60
+        minimum: 10
       volumeDecibel:
         description: "If true, the volume is presented in dB, otherwise relative level between 00 and 99 is displayed"
         type: "boolean"
@@ -75,6 +78,7 @@ module.exports = {
         description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
         type: "number"
         default: 60
+        minimum: 10
   },
   DenonAvrZoneSwitch: {
     title: "Denon AVR Zone Switch"
@@ -90,6 +94,7 @@ module.exports = {
         description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
         type: "number"
         default: 60
+        minimum: 10
   },
   DenonAvrMuteSwitch: {
     title: "Denon AVR Mute Switch"
@@ -105,6 +110,7 @@ module.exports = {
         description: "The time interval in seconds (minimum 10) at which the mutr state of the AVR will be read"
         type: "number"
         default: 60
+        minimum: 10
   },
   DenonAvrInputSelector: {
     title: "Denon AVR Input Selector"
@@ -120,6 +126,7 @@ module.exports = {
         description: "The time interval in seconds (minimum 10) at which the mutr state of the AVR will be read"
         type: "number"
         default: 60
+        minimum: 10
       buttons:
         description: "The inputs to select from"
         type: "array"
