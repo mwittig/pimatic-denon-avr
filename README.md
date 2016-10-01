@@ -11,16 +11,30 @@ Pimatic plugin to monitor &amp; control a Denon AV Receiver over a network conne
 ## Status of Implementation
 
 Since the first release the following features have been implemented:
-* support for input selection
-* support for zones
+* support for power switching, mute, volume control, input selection, and status display
+* support for zone control (up to three zones depending on receiver model)
 * auto-discovery for pimatic 0.9
-
-Planned features:
-* add HTTP transport as an alternative to using telnet
+* **new**: HTTP transport as an alternative to using telnet for recent AVR models
 
 Additional features can be added easily and I am happy to do this on demand. 
 
+## Notable Changes
+
+As of version v0.9.1 changing the volume when the AVR is in standby mode will automatically switch on the AVR. With 
+earlier versions the slider position flipped back to the previous position as the AVR does not accept changing the
+volume when it is not switched on.
+
+## Contributions
+
+Contributions to the project are  welcome. You can simply fork the project and create a pull request with 
+your contribution to start with. If you like this plugin, please consider &#x2605; starring 
+[the project on github](https://github.com/mwittig/pimatic-denon-avr).
+
 ## Plugin Configuration
+
+Note, the control protocol is set to TELNET by default. The telnet control is limited to one control 
+application connect at a time, as the AVR only accepts a single transport connection. Use the HTTP 
+control protocol instead if you have a '11, '12, '13, or X series AVR or a newer model released since 2014.
 
     {
           "plugin": "denon-avr",
@@ -31,9 +45,10 @@ The plugin has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
-| host              | -        | String  | Hostname or IP address of the AVR |
-| port              | 23       | Number  | AVR control port |
-| debug             | false    | Boolean | Debug mode. Writes debug messages to the pimatic log, if set to true. |
+| host              | -        | String  | Hostname or IP address of the AVR           |
+| port              | 23 or 80 | Number  | AVR control port - only required for testing |
+| protocol          | "TELNET" | Enum    | The protocol to be used, one of "HTTP" or "TELNET" |
+| debug             | false    | Boolean | Debug mode. Writes debug messages to the pimatic log, if set to true |
 
 
 ## Device Configuration
@@ -53,7 +68,6 @@ the power on state and to accept changing settings. Thus, subsequent commands wi
 realize this, for example, if you change the volume immediately after switching power on, it will take 2 seconds
 for the volume attribute to update. In rare cases, if the power on procedure takes longer, the slider may flip back
 to its previous position.
-
 
 
 ### DenonAvrPresenceSensor
@@ -107,7 +121,7 @@ The device has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
-| zone              | "MAIN"   | enum    | The zone to be switched on and off, one of "MAIN", "ZONE2", or "ZONE3" |
+| zone              | "MAIN"   | Enum    | The zone to be switched on and off, one of "MAIN", "ZONE2", or "ZONE3" |
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 
 
@@ -127,7 +141,7 @@ The device has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
-| zone              | "MAIN"   | enum    | The zone to be muted, one of "MAIN", "ZONE2", or "ZONE3" |
+| zone              | "MAIN"   | Enum    | The zone to be muted, one of "MAIN", "ZONE2", or "ZONE3" |
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 
 
@@ -169,7 +183,7 @@ The device has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
-| zone              | "MAIN"   | enum    | The zone for which volume shall be controlled, one of "MAIN", "ZONE2", or "ZONE3". If set to MAIN it is equivalent to master volume |
+| zone              | "MAIN"   | Enum    | The zone for which volume shall be controlled, one of "MAIN", "ZONE2", or "ZONE3". If set to MAIN it is equivalent to master volume |
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 | volumeDecibel     | false    | Boolean | If true, the volume is presented in dB, otherwise the absolute level between 00 and 99 is displayed |
 | volumeLimit       | 0        | Number  | If greater than 0, enforce a volume limiter for the maximum volume level |
@@ -204,7 +218,7 @@ The device has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
-| zone              | "MAIN"   | enum    | The zone to select input for, one of "MAIN", "ZONE2", or "ZONE3" |
+| zone              | "MAIN"   | Enum    | The zone to select input for, one of "MAIN", "ZONE2", or "ZONE3" |
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 | buttons           | see example | Array   | The buttons to display for selection. See device configuration schema for details |
 
