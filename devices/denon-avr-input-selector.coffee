@@ -63,6 +63,3 @@ module.exports = (env) ->
             @_requestUpdate()
 
       throw new Error("No button with the id #{buttonId} found")
-
-    getState: () ->
-      return Promise.resolve @_state
