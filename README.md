@@ -192,7 +192,8 @@ The device has the following configuration properties:
 
 ## DenonAvrInputSelector
 
-The DenonAvrInputSelector can be used to select the inpit source. Allowed value depend on the AVR model.
+The DenonAvrInputSelector can be used to select the input source. Allowed values for input selection
+depend on the AVR model.
 
     {
           "id": "avr-5",
