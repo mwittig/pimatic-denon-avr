@@ -33,7 +33,7 @@ your contribution to start with. If you like this plugin, please consider &#x260
 ## Plugin Configuration
 
 Note, the control protocol is set to TELNET by default. The telnet control is limited to one control 
-application connect at a time, as the AVR only accepts a single transport connection. Use the HTTP 
+application connection at a time, as the AVR only accepts a single transport connection. Use the HTTP 
 control protocol instead if you have a '11, '12, '13, or X series AVR or a newer model released since 2014.
 
     {
