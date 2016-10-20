@@ -45,7 +45,7 @@
   "dependencies": {
     "pimatic-plugin-commons": "^0.9.3",
     "promise-retryer": "0.0.1",
-    "restler-promise": "0.0.3",
+    "restler-promise": "0.0.4",
     "xml2js": "^0.4.17"
   },
   "optionalDependencies": {},
