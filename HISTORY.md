@@ -1,5 +1,8 @@
 # Release History
 
+* 20161020, V0.9.3
+    * Dependency updates
+    
 * 20161020, V0.9.2
     * Updated to restler-promise@0.0.4
     * Revised README
