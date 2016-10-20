@@ -1,14 +1,18 @@
 # Release History
 
+* 20161020, V0.9.2
+    * Updated to restler-promise@0.0.4
+    * Revised README
+    
 * 20161001, V0.9.1
-    * Added HTTP transport which can be used with current receivers such as AVR-X1200W and AVR-X2200W
+    * Added HTTP transport which can be used with '11, '12, '13, and X series AVR and newer models released since 2014
     * Improved volume control mapping between absolute, dB, and slider levels
     * Added support for undocumented MVMAX (telnet transport, only)
     * Added proper removal of event listeners to device destroy() methods to avoid potential resource leak
     
 * 20160714, V0.9.0
     * Dependency Update for pimatic-plugin-commons which corrects handling of continuous attribute values
-    * Removed dependency on bluebird as pimatic 0.9 support bluebird v3.x
+    * Removed dependency on bluebird as pimatic 0.9 supports bluebird v3.x
     * Reversed order of release history
     * Removed Travis build for node.js 0.10
     
