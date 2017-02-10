@@ -20,9 +20,9 @@ Additional features can be added easily and I am happy to do this on demand.
 
 ## Notable Changes
 
-As of version v0.9.1 changing the volume when the AVR is in standby mode will automatically switch on the AVR. With 
-earlier versions the slider position flipped back to the previous position as the AVR does not accept changing the
-volume when it is not switched on.
+Since version v0.9.1 changing the master volume automatically switched on the AVR. Unfortunately, it turned
+ out that this causes an disruption of video processing with some receivers. Therefore, as of version v0.9.4 changing
+  the master volume will no longer switch the AVR.
 
 ## Contributions
 
