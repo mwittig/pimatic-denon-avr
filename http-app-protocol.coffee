@@ -3,6 +3,7 @@ module.exports = (env) ->
 
   Promise = env.require 'bluebird'
   rest = require('restler-promise')(Promise)
+  http = require 'http'
   parseXmlString = Promise.promisify require('xml2js').parseString
   retry = require('promise-retryer')(Promise)
   commons = require('pimatic-plugin-commons')(env)
@@ -14,6 +15,8 @@ module.exports = (env) ->
       @host = @config.host
       @port = @config.port || 80
       @debug = @config.debug || false
+      @opts =
+        agent: new http.Agent()
       @base = commons.base @, 'HttpAppProtocol'
       @on "newListener", =>
         @base.debug "Status response event listeners: #{1 + @listenerCount 'response'}"
@@ -56,7 +59,7 @@ module.exports = (env) ->
 
     _requestUpdate: (command, param="") =>
       @base.debug "http://#{@host}:#{@port}/goform/#{@_mapZoneToUrlPath command}XmlStatusLite.xml"
-      return rest.get "http://#{@host}:#{@port}/goform/#{@_mapZoneToUrlPath command}XmlStatusLite.xml"
+      return rest.get "http://#{@host}:#{@port}/goform/#{@_mapZoneToUrlPath command}XmlStatusLite.xml", @opts
       .then (response) =>
         if response.data.length isnt 0
           @base.debug response.data
@@ -73,6 +76,8 @@ module.exports = (env) ->
             @_triggerResponse "#{prefix}SI", dom.item.InputFuncSelect[0].value[0].toUpperCase()
         else
           throw new Error "Empty result received for status request"
+      .catch (err) =>
+        @base.error err
       .finally =>
         delete @scheduledUpdates[@_mapZoneToObjectKey command] if @scheduledUpdates[@_mapZoneToObjectKey command]?
 
@@ -92,7 +97,7 @@ module.exports = (env) ->
       return new Promise (resolve, reject) =>
         if param isnt '?'
           @base.debug "http://#{@host}:#{@port}/goform/formiPhoneAppDirect.xml?#{command}#{param}"
-          promise = rest.get "http://#{@host}:#{@port}/goform/formiPhoneAppDirect.xml?#{command}#{param}"
+          promise = rest.get "http://#{@host}:#{@port}/goform/formiPhoneAppDirect.xml?#{command}#{param}", @opts
           .then =>
             @_triggerResponse command, param
         else
