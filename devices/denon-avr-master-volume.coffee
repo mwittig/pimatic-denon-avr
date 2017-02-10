@@ -84,15 +84,16 @@ module.exports = (env) ->
       return Math.min 100, Math.round(num * 100 / @maxAbsoluteVolume)
 
     changeDimlevelTo: (newLevel) ->
-      return new Promise (resolve) =>
+      return new Promise (resolve, reject) =>
         if @volumeLimit > 0 and newLevel > @volumeLimit
           newLevel = @volumeLimit
 
-        @plugin.protocolHandler.sendRequest('PW', 'ON').then =>
-          @plugin.protocolHandler.sendRequest('MV', @_levelToVolumeParam(newLevel)).then =>
-            @_setDimlevel newLevel
-            @_requestUpdate()
-            resolve()
+        @plugin.protocolHandler.sendRequest('MV', @_levelToVolumeParam(newLevel)).then =>
+          @_setDimlevel newLevel
+          @_requestUpdate()
+          resolve()
+        .catch (err) =>
+          @_base.rejectWithErrorString reject, err
 
     getVolume: () ->
       return new Promise.resolve @_volume

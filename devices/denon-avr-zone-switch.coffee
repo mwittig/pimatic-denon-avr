@@ -56,11 +56,13 @@ module.exports = (env) ->
             @_setState false
 
     changeStateTo: (newState) ->
-      return new Promise (resolve) =>
+      return new Promise (resolve, reject) =>
         @plugin.protocolHandler.sendRequest(@zoneCmd, if newState then 'ON' else 'OFF').then =>
           @_setState newState
           @_requestUpdate()
           resolve()
+        .catch (err) =>
+          @_base.rejectWithErrorString reject, err
 
     getState: () ->
       return Promise.resolve @_state

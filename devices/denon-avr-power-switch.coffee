@@ -45,11 +45,13 @@ module.exports = (env) ->
           @_setState if response.param is 'ON' then true else false
 
     changeStateTo: (newState) ->
-      return new Promise (resolve) =>
+      return new Promise (resolve, reject) =>
         @plugin.protocolHandler.sendRequest('PW', if newState then 'ON' else 'STANDBY').then =>
           @_setState newState
           @_requestUpdate()
           resolve()
+        .catch (err) =>
+          @_base.rejectWithErrorString reject, err
 
     getState: () ->
       return Promise.resolve @_state

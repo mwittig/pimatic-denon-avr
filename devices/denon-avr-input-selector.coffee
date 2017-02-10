@@ -61,5 +61,7 @@ module.exports = (env) ->
           @emit 'button', b.id
           return @plugin.protocolHandler.sendRequest(@zoneCmd, b.id).then =>
             @_requestUpdate()
+          .catch (err) =>
+            @_base.rejectWithErrorString Promise.reject, err
 
       throw new Error("No button with the id #{buttonId} found")
