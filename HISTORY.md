@@ -1,5 +1,9 @@
 # Release History
 
+* 20170210, V0.9.4
+    * Changed behavior of master volume to avoid video disruption, issue #16 
+    * Improved Error Handling, issue #17
+    
 * 20161020, V0.9.3
     * Dependency updates
     
