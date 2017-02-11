@@ -39,6 +39,10 @@ module.exports = (env) ->
     }
   ]
 
+  actionProviders = [
+    'denon-avr-input-select-action'
+  ]
+
   # ###DenonAvrPlugin class
   class DenonAvrPlugin extends env.plugins.Plugin
     init: (app, @framework, @config) =>
@@ -61,6 +65,12 @@ module.exports = (env) ->
           configDef: deviceConfigDef[className],
           createCallback: @_callbackHandler(className, classType)
         })
+
+      for provider in actionProviders
+        className = provider.replace(/(^[a-z])|(\-[a-z])/g, ($1) -> $1.toUpperCase().replace('-','')) + 'Provider'
+        classType = require('./actions/' + provider)(env)
+        @base.debug "Registering action provider #{className}"
+        @framework.ruleManager.addActionProvider(new classType @framework)
 
       # auto-discovery
       @framework.deviceManager.on('discover', (eventData) =>

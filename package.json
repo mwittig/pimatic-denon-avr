@@ -13,6 +13,7 @@
     "device-config-schema.coffee",
     "telnet-app-protocol.coffee",
     "http-app-protocol.coffee",
+    "actions",
     "devices",
     "assets",
     "LICENSE",
