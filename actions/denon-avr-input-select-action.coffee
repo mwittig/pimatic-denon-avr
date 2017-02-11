@@ -10,21 +10,20 @@ module.exports = (env) ->
       @_variableManager = @framework.variableManager
       super()
 
-#    setup: ->
-#      @dependOnDevice(@device)
-#      super()
+    setup: ->
+      @dependOnDevice(@device)
+      super()
 
     executeAction: (simulate) =>
-      console.log "----executeAction----", value
       @_variableManager.evaluateStringExpression(@valueTokens)
       .then (value) =>
-        @selectInput value, simulate
+        @selectInput "" + value, simulate
 
     selectInput: (input, simulate) =>
       if simulate
         return Promise.resolve(__("would set input #{input}"))
       else
-        @device.buttonPressed input
+        @device.buttonPressed input.toUpperCase()
         return Promise.resolve(__("set input #{input}"))
 
   class DenonAvrInputSelectActionProvider extends env.actions.ActionProvider
@@ -32,7 +31,6 @@ module.exports = (env) ->
       super()
 
     parseAction: (input, context) =>
-      console.log "-----parseAction----", input
       selectorDevices = _(@framework.deviceManager.devices).values().filter(
         (device) => device.config.class is 'DenonAvrInputSelector'
       ).value()
@@ -56,8 +54,6 @@ module.exports = (env) ->
           valueTokens = ts
           match = next.getFullMatch()
         )
-
-      console.log "-----------------------", match, valueTokens
 
       if match?
         assert device?
