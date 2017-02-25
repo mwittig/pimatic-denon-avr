@@ -223,6 +223,9 @@ The device has the following configuration properties:
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 | buttons           | see example | Array   | The buttons to display for selection. See device configuration schema for details |
 
+The following action is provided to switch input as part of rules
+    * avr input <device> to "<id>", for example: avr input denon-avr to "tv"
+
 ## History
 
 See [Release History](https://github.com/mwittig/pimatic-denon-avr/blob/master/HISTORY.md).
