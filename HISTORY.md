@@ -1,5 +1,8 @@
 # Release History
 
+* 20170225, V0.9.5
+    * Added action to select the input source as part of rules
+    
 * 20170210, V0.9.4
     * Changed behavior of master volume to avoid video disruption, issue #16 
     * Improved Error Handling, issue #17
