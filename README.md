@@ -14,7 +14,9 @@ Since the first release the following features have been implemented:
 * support for power switching, mute, volume control, input selection, and status display
 * support for zone control (up to three zones depending on receiver model)
 * auto-discovery for pimatic 0.9
-* **new**: HTTP transport as an alternative to using telnet for recent AVR models
+* HTTP transport as an alternative to using telnet for recent AVR models
+* action to select input source, devices for power switching, volume mute, volume control are "switch" or "dimmer" 
+  devices types and support the respective action operations 
 
 Additional features can be added easily and I am happy to do this on demand. 
 
@@ -88,6 +90,9 @@ The device has the following configuration properties:
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 | volumeDecibel     | false    | Boolean | If true, the volume is presented in dB, otherwise relative level between 00 and 99 is displayed |
 
+The following predicates and actions are supported:
+* `{device} is present|absent`
+
 ### DenonAvrPowerSwitch
 
 The Power Switch can be used to switch the AVR on or off (standby) mode. Depending on your
@@ -104,6 +109,11 @@ The device has the following configuration properties:
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+
+The following predicates and actions are supported:
+* `{device} is turned on|off`
+* `switch {device} on|off`
+* `toggle {device}`
 
 ### DenonAvrZoneSwitch
 
@@ -124,6 +134,10 @@ The device has the following configuration properties:
 | zone              | "MAIN"   | Enum    | The zone to be switched on and off, one of "MAIN", "ZONE2", or "ZONE3" |
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 
+The following predicates and actions are supported:
+* `{device} is turned on|off`
+* `switch {device} on|off`
+* `toggle {device}`
 
 ### DenonAvrMuteSwitch
 
@@ -144,6 +158,10 @@ The device has the following configuration properties:
 | zone              | "MAIN"   | Enum    | The zone to be muted, one of "MAIN", "ZONE2", or "ZONE3" |
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 
+The following predicates and actions are supported:
+* `{device} is turned on|off`
+* `switch {device} on|off`
+* `toggle {device}`
 
 ### DenonAvrMasterVolume
 
@@ -169,6 +187,10 @@ The device has the following configuration properties:
 | volumeLimit       | 0        | Number  | If greater than 0, enforce a volume limiter for the maximum volume level |
 | maxAbsoluteVolume | 99       | Number  | Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99 |
 
+The following predicates and actions are supported:
+* `dimlevel of {device} {comparison operator} {Value}`, where {Value} is the percentage of volume 0-100
+* `dim {device} to {Value}`, where {Value} is the percentage of volume 0-100
+
 ### DenonAvrZoneVolume
 
 The Zone Volume can be used to change the  zone volume. 
@@ -189,6 +211,9 @@ The device has the following configuration properties:
 | volumeLimit       | 0        | Number  | If greater than 0, enforce a volume limiter for the maximum volume level |
 | maxAbsoluteVolume | 99       | Number  | Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99 |
 
+The following predicates and actions are supported:
+* `dimlevel of {device} {comparison operator} {Value}`, where {Value} is percentage of volume 0-100
+* `dim {device} to {Value}`, where {Value} is percentage of volume 0-100
 
 ## DenonAvrInputSelector
 
@@ -223,9 +248,9 @@ The device has the following configuration properties:
 | interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
 | buttons           | see example | Array   | The buttons to display for selection. See device configuration schema for details |
 
-The following action is provided to switch the input source as part of rules
-
-* `avr input <device> to "<id>"`, for example: `avr input denon-avr to "tv"`
+The following predicates and actions are supported:
+* `input of {device} {comparison operator} "{Value}"`, where {Value} is a string matching a valid input source
+* `avr input {device to "{Value}"`, for example: `avr input denon-avr to "tv"`
 
 ## History
 
