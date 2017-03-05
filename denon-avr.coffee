@@ -58,7 +58,7 @@ module.exports = (env) ->
       for device in deviceConfigTemplates
         className = device.class
         # convert camel-case classname to kebap-case filename
-        filename = className.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+        filename = className.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
         classType = require('./devices/' + filename)(env)
         @base.debug "Registering device class #{className}"
         @framework.deviceManager.registerDeviceClass(className, {

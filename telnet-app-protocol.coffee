@@ -161,4 +161,4 @@ module.exports = (env) ->
             else
               resolve()
         ).catch (error) =>
-            reject error
+          reject error
