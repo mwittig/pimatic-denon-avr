@@ -188,8 +188,8 @@ The device has the following configuration properties:
 | maxAbsoluteVolume | 99       | Number  | Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99 |
 
 The following predicates and actions are supported:
-* `dimlevel of {device} {comparison operator} {Value}`, where {Value} is the percentage of volume 0-100
-* `dim {device} to {Value}`, where {Value} is the percentage of volume 0-100
+* `dimlevel of {device} {Comparison Operator} {Value}`, where `{Value}` is the percentage of volume 0-100
+* `dim {device} to {Value}`, where `{Value}` is the percentage of volume 0-100
 
 ### DenonAvrZoneVolume
 
@@ -212,8 +212,8 @@ The device has the following configuration properties:
 | maxAbsoluteVolume | 99       | Number  | Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99 |
 
 The following predicates and actions are supported:
-* `dimlevel of {device} {comparison operator} {Value}`, where {Value} is percentage of volume 0-100
-* `dim {device} to {Value}`, where {Value} is percentage of volume 0-100
+* `dimlevel of {device} {Comparison Operator} {Value}`, where `{Value}` is the percentage of volume 0-100
+* `dim {device} to {Value}`, where `{Value}` is percentage of volume 0-100
 
 ## DenonAvrInputSelector
 
@@ -249,7 +249,7 @@ The device has the following configuration properties:
 | buttons           | see example | Array   | The buttons to display for selection. See device configuration schema for details |
 
 The following predicates and actions are supported:
-* `input of {device} {comparison operator} "{Value}"`, where {Value} is a string matching a valid input source
+* `input of {device} {Comparison Operator} "{Value}"`, where `{Value}` is a string matching a valid input source
 * `avr input {device to "{Value}"`, for example: `avr input denon-avr to "tv"`
 
 ## History
