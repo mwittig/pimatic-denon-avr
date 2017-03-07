@@ -4,7 +4,7 @@ module.exports = {
     title: "Denon AVR Power Switch"
     description: "Denon AVR Power Switch"
     type: "object"
-    extensions: ["xLink", "xPresentLabel", "xAbsentLabel"]
+    extensions: ["xLink", "xPresentLabel", "xAbsentLabel", "xAttributeOptions"]
     properties:
       interval:
         description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
@@ -20,7 +20,7 @@ module.exports = {
     title: "Denon AVR Master Volume"
     description: "Denon AVR Master Volume"
     type: "object"
-    extensions: ["xLink", "xPresentLabel", "xAbsentLabel"]
+    extensions: ["xLink", "xPresentLabel", "xAbsentLabel", "xAttributeOptions"]
     properties:
       interval:
         description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
@@ -44,7 +44,7 @@ module.exports = {
     title: "Denon AVR Zone Volume"
     description: "Denon AVR Zone Volume"
     type: "object"
-    extensions: ["xLink", "xPresentLabel", "xAbsentLabel"]
+    extensions: ["xLink", "xPresentLabel", "xAbsentLabel", "xAttributeOptions"]
     properties:
       zone:
         description: "The zone for which volume shall be controlled. If set to MAIN it is equivalent to master volume"
