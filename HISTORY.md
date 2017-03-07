@@ -1,5 +1,10 @@
 # Release History
 
+* 20170307, V0.9.6
+    * Added "xAttributeOptions" to config schema for DenonAvrPresenceSensor, DenonAvrMasterVolume, 
+      and DenonAvrZoneVolume
+    * Revised README, documented the relevant predicates and actions available for each device type 
+    
 * 20170225, V0.9.5
     * Added action to select the input source as part of rules
     
