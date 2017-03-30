@@ -53,8 +53,15 @@
   "peerDependencies": {
     "pimatic": ">=0.8.0 <1.0.0"
   },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-coffeelint": "^0.0.16"
+  },
   "engines": {
     "node": ">= 4",
     "npm": ">1.1.x"
+  },
+  "scripts": {
+    "test": "grunt test"
   }
 }
