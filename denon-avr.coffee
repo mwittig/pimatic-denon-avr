@@ -67,7 +67,8 @@ module.exports = (env) ->
         })
 
       for provider in actionProviders
-        className = provider.replace(/(^[a-z])|(\-[a-z])/g, ($1) -> $1.toUpperCase().replace('-','')) + 'Provider'
+        className = provider.replace(/(^[a-z])|(\-[a-z])/g, ($1) ->
+          $1.toUpperCase().replace('-','')) + 'Provider'
         classType = require('./actions/' + provider)(env)
         @base.debug "Registering action provider #{className}"
         @framework.ruleManager.addActionProvider(new classType @framework)
@@ -89,7 +90,8 @@ module.exports = (env) ->
         @framework.deviceManager.discoveredDevice pluginName, deviceName, deviceConfig
 
     _callbackHandler: (className, classType) ->
-      # this closure is required to keep the className and classType context as part of the iteration
+      # this closure is required to keep the className and classType
+      # context as part of the iteration
       return (config, lastState) =>
         return new classType(config, @, lastState)
 

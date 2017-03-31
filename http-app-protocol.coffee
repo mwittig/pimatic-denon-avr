@@ -50,7 +50,7 @@ module.exports = (env) ->
           "#{command}#{param}"
           "#{command}",
           "#{param}"
-          index:0
+          index: 0
           input: "#{command}#{param}"
         ]
         command: command
@@ -58,8 +58,9 @@ module.exports = (env) ->
         message: "#{command}#{param}"
 
     _requestUpdate: (command, param="") =>
-      @base.debug "http://#{@host}:#{@port}/goform/#{@_mapZoneToUrlPath command}XmlStatusLite.xml"
-      return rest.get "http://#{@host}:#{@port}/goform/#{@_mapZoneToUrlPath command}XmlStatusLite.xml", @opts
+      url = "http://#{@host}:#{@port}/goform/#{@_mapZoneToUrlPath command}XmlStatusLite.xml"
+      @base.debug url
+      return rest.get url, @opts
       .then (response) =>
         if response.data.length isnt 0
           @base.debug response.data
@@ -79,7 +80,8 @@ module.exports = (env) ->
       .catch (err) =>
         @base.error err
       .finally =>
-        delete @scheduledUpdates[@_mapZoneToObjectKey command] if @scheduledUpdates[@_mapZoneToObjectKey command]?
+        if @scheduledUpdates[@_mapZoneToObjectKey command]?
+          delete @scheduledUpdates[@_mapZoneToObjectKey command]
 
     _scheduleUpdate: (command, param="", immediate) ->
       timeout=1500
@@ -96,8 +98,9 @@ module.exports = (env) ->
     sendRequest: (command, param="", immediate=false) ->
       return new Promise (resolve, reject) =>
         if param isnt '?'
-          @base.debug "http://#{@host}:#{@port}/goform/formiPhoneAppDirect.xml?#{command}#{param}"
-          promise = rest.get "http://#{@host}:#{@port}/goform/formiPhoneAppDirect.xml?#{command}#{param}", @opts
+          url = "http://#{@host}:#{@port}/goform/formiPhoneAppDirect.xml?#{command}#{param}"
+          @base.debug url
+          promise = rest.get url, @opts
           .then =>
             @_triggerResponse command, param
         else

@@ -15,7 +15,10 @@ module.exports = {
       enum: ["TELNET", "HTTP"]
       default: "TELNET"
     port:
-      description: "AVR control port - only required for testing. Defaults to port 23 with telnet and port 80 with http"
+      description: """
+        AVR control port (inly required for testing). Defaults to port 23
+        for TELNET protocol and port 80 for HTTP protocol
+      """
       type: "number"
       required: false
 }
