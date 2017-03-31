@@ -22,9 +22,13 @@ Additional features can be added easily and I am happy to do this on demand.
 
 ## Notable Changes
 
-Since version v0.9.1 changing the master volume automatically switched on the AVR. Unfortunately, it turned
+Since version 0.9.1 changing the master volume automatically switched on the AVR. Unfortunately, it turned
  out that this causes an disruption of video processing with some receivers. Therefore, as of version v0.9.4 changing
   the master volume will no longer switch the AVR.
+  
+Since version 0.9.7 the minimum interval time for updates has been lowered to 2 seconds. Note, however, **shorter
+ update cycles may result in higher load an memory consumption** on the pimatic host. It may also degrade the
+ performance of AVR's control system which provides the web & mobile applications access.
 
 ## Contributions
 
@@ -87,7 +91,7 @@ The device has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
-| interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+| interval          | 60       | Number  | The time interval in seconds (minimum 2) at which the presence state of the AVR will be read |
 | volumeDecibel     | false    | Boolean | If true, the volume is presented in dB, otherwise relative level between 00 and 99 is displayed |
 
 The following predicates and actions are supported:
@@ -108,7 +112,7 @@ The device has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
-| interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+| interval          | 60       | Number  | The time interval in seconds (minimum 2) at which the power state of the AVR will be read |
 
 The following predicates and actions are supported:
 * `{device} is turned on|off`
@@ -132,7 +136,7 @@ The device has the following configuration properties:
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
 | zone              | "MAIN"   | Enum    | The zone to be switched on and off, one of "MAIN", "ZONE2", or "ZONE3" |
-| interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+| interval          | 60       | Number  | The time interval in seconds (minimum 2) at which the zone switch state of the AVR will be read |
 
 The following predicates and actions are supported:
 * `{device} is turned on|off`
@@ -156,7 +160,7 @@ The device has the following configuration properties:
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
 | zone              | "MAIN"   | Enum    | The zone to be muted, one of "MAIN", "ZONE2", or "ZONE3" |
-| interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+| interval          | 60       | Number  | The time interval in seconds (minimum 2) at which the mute state of the AVR will be read |
 
 The following predicates and actions are supported:
 * `{device} is turned on|off`
@@ -182,7 +186,7 @@ The device has the following configuration properties:
 
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
-| interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+| interval          | 60       | Number  | The time interval in seconds (minimum 2) at which the volume state of the AVR will be read |
 | volumeDecibel     | false    | Boolean | If true, the volume is presented in dB, otherwise the absolute level between 00 and 99 is displayed |
 | volumeLimit       | 0        | Number  | If greater than 0, enforce a volume limiter for the maximum volume level |
 | maxAbsoluteVolume | 99       | Number  | Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99 |
@@ -206,7 +210,7 @@ The device has the following configuration properties:
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
 | zone              | "MAIN"   | Enum    | The zone for which volume shall be controlled, one of "MAIN", "ZONE2", or "ZONE3". If set to MAIN it is equivalent to master volume |
-| interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+| interval          | 60       | Number  | The time interval in seconds (minimum 2) at which the zone volume state of the AVR will be read |
 | volumeDecibel     | false    | Boolean | If true, the volume is presented in dB, otherwise the absolute level between 00 and 99 is displayed |
 | volumeLimit       | 0        | Number  | If greater than 0, enforce a volume limiter for the maximum volume level |
 | maxAbsoluteVolume | 99       | Number  | Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99 |
@@ -245,7 +249,7 @@ The device has the following configuration properties:
 | Property          | Default  | Type    | Description                                 |
 |:------------------|:---------|:--------|:--------------------------------------------|
 | zone              | "MAIN"   | Enum    | The zone to select input for, one of "MAIN", "ZONE2", or "ZONE3" |
-| interval          | 60       | Number  | The time interval in seconds (minimum 10) at which the power state of the AVR will be read |
+| interval          | 60       | Number  | The time interval in seconds (minimum 2) at which the selector state of the AVR will be read |
 | buttons           | see example | Array   | The buttons to display for selection. See device configuration schema for details |
 
 The following predicates and actions are supported:
