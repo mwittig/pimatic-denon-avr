@@ -1,5 +1,11 @@
 # Release History
 
+* 20170331, V0.9.7
+    * Changed the minimum interval time for status updates from 10 to 2 seconds
+    * Added coffeelint style checker to build process
+    * Coding style fixes
+    * Revised README
+    
 * 20170307, V0.9.6
     * Added "xAttributeOptions" to config schema for DenonAvrPresenceSensor, DenonAvrMasterVolume, 
       and DenonAvrZoneVolume
