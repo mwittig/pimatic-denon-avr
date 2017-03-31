@@ -4,7 +4,8 @@ module.exports = (env) ->
   _ = env.require 'lodash'
   commons = require('pimatic-plugin-commons')(env)
 
-  # Device class representing the zone switch of the Denon AVR, i.e., a switch to switch a zone on and off
+  # Device class representing the zone switch of the Denon AVR,
+  # i.e., a switch to switch a zone on and off
   class DenonAvrZoneSwitch extends env.devices.PowerSwitch
 
     # Create a new DenonAvrZoneSwitch device
@@ -23,7 +24,7 @@ module.exports = (env) ->
         when 'ZONE3' then (
           @zoneCmd = 'Z3'
         )
-      @interval = @_base.normalize @config.interval, 10
+      @interval = @_base.normalize @config.interval, 2
       @debug = @plugin.debug || false
       @responseHandler = @_createResponseHandler()
       @plugin.protocolHandler.on 'response', @responseHandler

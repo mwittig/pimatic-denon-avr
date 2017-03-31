@@ -24,12 +24,12 @@ module.exports = (env) ->
           @zoneCmd = 'Z3MU'
         )
       @lastPowerState=null
-      @interval = @_base.normalize @config.interval, 10
+      @interval = @_base.normalize @config.interval, 2
       @debug = @plugin.debug || false
       @responseHandler = @_createResponseHandler()
       @plugin.protocolHandler.on 'response', @responseHandler
       super()
-      @_state = false;
+      @_state = false
       process.nextTick () =>
         @_requestUpdate true
 

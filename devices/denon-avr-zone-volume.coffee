@@ -23,7 +23,7 @@ module.exports = (env) ->
         when 'ZONE3' then (
           @zoneCmd = 'Z3'
         )
-      @interval = @_base.normalize @config.interval, 10
+      @interval = @_base.normalize @config.interval, 2
       @volumeDecibel = @config.volumeDecibel
       @volumeLimit = @_base.normalize @config.volumeLimit, 0, 99
       @maxAbsoluteVolume = @_base.normalize @config.maxAbsoluteVolume, 0, 99

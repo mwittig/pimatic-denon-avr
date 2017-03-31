@@ -15,7 +15,7 @@ module.exports = (env) ->
       @_base = commons.base @, @config.class
       @id = @config.id
       @name = @config.name
-      @interval = @_base.normalize @config.interval, 10
+      @interval = @_base.normalize @config.interval, 2
       @debug = @plugin.debug || false
       @responseHandler = @_createResponseHandler()
       @plugin.protocolHandler.on 'response', @responseHandler

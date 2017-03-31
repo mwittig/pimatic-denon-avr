@@ -23,7 +23,7 @@ module.exports = (env) ->
         when 'ZONE3' then (
           @zoneCmd = 'Z3'
         )
-      @interval = @_base.normalize @config.interval, 10
+      @interval = @_base.normalize @config.interval, 2
       @debug = @plugin.debug || false
       for b in @config.buttons
         b.text = b.id unless b.text?
@@ -50,7 +50,8 @@ module.exports = (env) ->
     _createResponseHandler: () ->
       return (response) =>
         @_base.debug "Response", response.matchedResults
-        if response.command is @zoneCmd and response.param isnt @_lastPressedButton and response.param isnt 'OFF'
+        if response.command is @zoneCmd and
+            response.param isnt @_lastPressedButton and response.param isnt 'OFF'
           @_lastPressedButton = response.param
           @emit 'button', response.param
 

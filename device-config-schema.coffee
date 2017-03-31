@@ -7,12 +7,18 @@ module.exports = {
     extensions: ["xLink", "xPresentLabel", "xAbsentLabel", "xAttributeOptions"]
     properties:
       interval:
-        description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
+        description: """
+          The time interval in seconds (minimum 2) at which the presence state of the
+          AVR will be read
+        """
         type: "number"
         default: 60
-        minimum: 10
+        minimum: 2
       volumeDecibel:
-        description: "If true, the volume is presented in dB, otherwise relative level between 00 and 99 is displayed"
+        description: """
+          If true, the volume is presented in dB, otherwise relative level between 00
+          and 99 is displayed
+        """
         type: "boolean"
         default: false
   },
@@ -23,20 +29,31 @@ module.exports = {
     extensions: ["xLink", "xPresentLabel", "xAbsentLabel", "xAttributeOptions"]
     properties:
       interval:
-        description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
+        description: """
+          The time interval in seconds (minimum 2) at which the volume state of the
+          AVR will be read
+        """
         type: "number"
         default: 60
-        minimum: 10
+        minimum: 2
       volumeDecibel:
-        description: "If true, the volume is presented in dB, otherwise relative level between 00 and 99 is displayed"
+        description: """
+          If true, the volume is presented in dB, otherwise relative level between 00
+          and 99 is displayed
+        """
         type: "boolean"
         default: false
       volumeLimit:
-        description: "If greater than 0, enforce a volume limiter for the maximum volume level"
+        description: """
+          If greater than 0, enforce a volume limiter for the maximum volume level
+        """
         type: "number"
         default: 0
       maxAbsoluteVolume:
-        description: "Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99"
+        description: """
+          Maximum absolute volume which can be set. Some receivers already stop at a
+          lower value than 99
+        """
         type: "number"
         default: 99
   },
@@ -47,24 +64,38 @@ module.exports = {
     extensions: ["xLink", "xPresentLabel", "xAbsentLabel", "xAttributeOptions"]
     properties:
       zone:
-        description: "The zone for which volume shall be controlled. If set to MAIN it is equivalent to master volume"
+        description: """
+          The zone for which volume shall be controlled. If set to MAIN it is
+          equivalent to master volume
+        """
         enum: ["MAIN", "ZONE2", "ZONE3"]
         default: "MAIN"
       interval:
-        description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
+        description: """
+          The time interval in seconds (minimum 2) at which the zone volume state
+          of the AVR will be read
+        """
         type: "number"
         default: 60
-        minimum: 10
+        minimum: 2
       volumeDecibel:
-        description: "If true, the volume is presented in dB, otherwise relative level between 00 and 99 is displayed"
+        description: """
+          If true, the volume is presented in dB, otherwise relative level
+          between 00 and 99 is displayed
+        """
         type: "boolean"
         default: false
       volumeLimit:
-        description: "If greater than 0, enforce a volume limiter for the maximum volume level"
+        description: """
+          If greater than 0, enforce a volume limiter for the maximum volume level
+        """
         type: "number"
         default: 0
       maxAbsoluteVolume:
-        description: "Maximum absolute volume which can be set. Some receivers already stop at a lower value than 99"
+        description: """
+          Maximum absolute volume which can be set. Some receivers already stop
+          at a lower value than 99
+        """
         type: "number"
         default: 99
   },
@@ -75,10 +106,13 @@ module.exports = {
     extensions: ["xLink", "xOnLabel", "xOffLabel"]
     properties:
       interval:
-        description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
+        description: """
+          The time interval in seconds (minimum 2) at which the power state
+          of the AVR will be read
+        """
         type: "number"
         default: 60
-        minimum: 10
+        minimum: 2
   },
   DenonAvrZoneSwitch: {
     title: "Denon AVR Zone Switch"
@@ -91,10 +125,13 @@ module.exports = {
         enum: ["MAIN", "ZONE2", "ZONE3"]
         default: "MAIN"
       interval:
-        description: "The time interval in seconds (minimum 10) at which the power state of the AVR will be read"
+        description: """
+          The time interval in seconds (minimum 2) at which the zone switch
+          state of the AVR will be read
+        """
         type: "number"
         default: 60
-        minimum: 10
+        minimum: 2
   },
   DenonAvrMuteSwitch: {
     title: "Denon AVR Mute Switch"
@@ -107,10 +144,13 @@ module.exports = {
         enum: ["MAIN", "ZONE2", "ZONE3"]
         default: "MAIN"
       interval:
-        description: "The time interval in seconds (minimum 10) at which the mutr state of the AVR will be read"
+        description: """
+          The time interval in seconds (minimum 2) at which the mute
+          state of the AVR will be read
+        """
         type: "number"
         default: 60
-        minimum: 10
+        minimum: 2
   },
   DenonAvrInputSelector: {
     title: "Denon AVR Input Selector"
@@ -123,10 +163,13 @@ module.exports = {
         enum: ["MAIN", "ZONE2", "ZONE3"]
         default: "MAIN"
       interval:
-        description: "The time interval in seconds (minimum 10) at which the mutr state of the AVR will be read"
+        description: """
+          The time interval in seconds (minimum 2) at which the selector
+          state of the AVR will be read
+        """
         type: "number"
         default: 60
-        minimum: 10
+        minimum: 2
       buttons:
         description: "The inputs to select from"
         type: "array"
@@ -151,14 +194,16 @@ module.exports = {
             id:
               enum: [
                 "CD", "TUNER", "DVD", "BD", "TV", "SAT/CBL", "MPLAY", "GAME", "HDRADIO", "NET",
-                "PANDORA", "SIRIUSXM", "SPOTIFY", "LASTFM", "FLICKR", "IRADIO", "SERVER", "FAVORITES",
-                "AUX1", "AUX2", "AUX3", "AUX4", "AUX5", "AUX6", "AUX7", "BT", "USB", "USB/IPOD",
-                "IPD", "IRP", "FVP",
+                "PANDORA", "SIRIUSXM", "SPOTIFY", "LASTFM", "FLICKR", "IRADIO", "SERVER",
+                "FAVORITES", "AUX1", "AUX2", "AUX3", "AUX4", "AUX5", "AUX6", "AUX7", "BT",
+                "USB", "USB/IPOD", "IPD", "IRP", "FVP",
               ]
               description: "The input ids switchable by the AVR"
             text:
               type: "string"
-              description: "The button text to be displayed. The id will be displayed if not set"
+              description: """
+                The button text to be displayed. The id will be displayed if not set
+              """
               required: false
             confirm:
               description: "Ask the user to confirm the input select"
