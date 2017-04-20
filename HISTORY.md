@@ -1,5 +1,8 @@
 # Release History
 
+* 20170420, V0.9.8
+    * Dependency updates
+    
 * 20170331, V0.9.7
     * Changed the minimum interval time for status updates from 10 to 2 seconds
     * Added coffeelint style checker to build process
