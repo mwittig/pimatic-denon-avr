@@ -44,7 +44,7 @@
   ],
   "configSchema": "denon-avr-config-schema.coffee",
   "dependencies": {
-    "pimatic-plugin-commons": "^0.9.3",
+    "pimatic-plugin-commons": "^0.9.4",
     "promise-retryer": "0.0.1",
     "restler-promise": "0.0.6",
     "xml2js": "^0.4.17"
