@@ -51,7 +51,7 @@
   },
   "optionalDependencies": {},
   "peerDependencies": {
-    "pimatic": ">=0.8.0 <1.0.0"
+    "pimatic": ">=0.9.39"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
