@@ -1,5 +1,8 @@
 # Release History
 
+* 20170429, V0.9.9
+    * Updated dependencies to fix "Missing or invalid interval parameter" error
+
 * 20170420, V0.9.8
     * Dependency updates
     
