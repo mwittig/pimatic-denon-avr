@@ -25,7 +25,7 @@
     "Pioneer AVR",
     "Pimatic"
   ],
-  "version": "0.9.9",
+  "version": "0.9.10",
   "homepage": "https://github.com/mwittig/pimatic-denon-avr/tree/master",
   "private": false,
   "repository": {
@@ -44,10 +44,10 @@
   ],
   "configSchema": "denon-avr-config-schema.coffee",
   "dependencies": {
-    "pimatic-plugin-commons": "^0.9.5",
+    "pimatic-plugin-commons": "^0.9.6",
     "promise-retryer": "0.0.1",
     "restler-promise": "0.0.9",
-    "xml2js": "^0.4.17"
+    "xml2js": "^0.4.19"
   },
   "optionalDependencies": {},
   "peerDependencies": {
