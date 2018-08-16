@@ -1,5 +1,8 @@
 # Release History
 
+* 20180816, V0.9.11
+    * Dependency updates
+    
 * 20180202, V0.9.10
     * Dependency updates
 
