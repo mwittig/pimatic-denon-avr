@@ -26,8 +26,11 @@ module.exports = (env) ->
       @lastPowerState=null
       @interval = @_base.normalize @config.interval, 2
       @debug = @plugin.debug || false
+      
+      @protocolHandler = @plugin.getProtocolHandler(@config)
+      
       @responseHandler = @_createResponseHandler()
-      @plugin.protocolHandler.on 'response', @responseHandler
+      @protocolHandler.on 'response', @responseHandler
       super()
       @_state = false
       process.nextTick () =>
@@ -35,13 +38,13 @@ module.exports = (env) ->
 
     destroy: () ->
       @_base.cancelUpdate()
-      @plugin.protocolHandler.removeListener 'response', @responseHandler
+      @protocolHandler.removeListener 'response', @responseHandler
       super()
 
     _requestUpdate: (immediate=false) ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
-      @plugin.protocolHandler.sendRequest @zoneCmd, '?', immediate
+      @protocolHandler.sendRequest @zoneCmd, '?', immediate
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
@@ -63,7 +66,7 @@ module.exports = (env) ->
 
     changeStateTo: (newState) ->
       return new Promise (resolve, reject) =>
-        @plugin.protocolHandler.sendRequest(@zoneCmd, if newState then 'ON' else 'OFF').then =>
+        @protocolHandler.sendRequest(@zoneCmd, if newState then 'ON' else 'OFF').then =>
           @_setState newState
           @_requestUpdate()
           resolve()

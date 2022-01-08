@@ -48,11 +48,12 @@ module.exports = (env) ->
     init: (app, @framework, @config) =>
       @debug = @config.debug || false
       @base = commons.base @, 'Plugin'
+      ###
       if @config.protocol is 'HTTP'
         @protocolHandler = new HttpAppProtocol @config
       else
         @protocolHandler = new TelnetAppProtocol @config
-
+      ###
       # register devices
       deviceConfigDef = require("./device-config-schema")
       for device in deviceConfigTemplates
@@ -84,7 +85,13 @@ module.exports = (env) ->
           if not matched
             process.nextTick @_discoveryCallbackHandler('pimatic-denon-avr', device.name, device)
       )
-
+    
+    getProtocolHandler: (config) ->
+      if config.protocol is 'HTTP'
+        return new HttpAppProtocol(config)
+      else
+        return new TelnetAppProtocol(config)
+    
     _discoveryCallbackHandler: (pluginName, deviceName, deviceConfig) ->
       return () =>
         @framework.deviceManager.discoveredDevice pluginName, deviceName, deviceConfig

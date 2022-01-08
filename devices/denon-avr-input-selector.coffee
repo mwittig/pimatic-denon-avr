@@ -27,21 +27,24 @@ module.exports = (env) ->
       @debug = @plugin.debug || false
       for b in @config.buttons
         b.text = b.id unless b.text?
+      
+      @protocolHandler = @plugin.getProtocolHandler(@config)
+      
       @responseHandler = @_createResponseHandler()
-      @plugin.protocolHandler.on 'response', @responseHandler
+      @protocolHandler.on 'response', @responseHandler
       super(@config)
       process.nextTick () =>
         @_requestUpdate true
 
     destroy: () ->
       @_base.cancelUpdate()
-      @plugin.protocolHandler.removeListener 'response', @responseHandler
+      @protocolHandler.removeListener 'response', @responseHandler
       super()
 
     _requestUpdate: (immediate=false) ->
       @_base.cancelUpdate()
       @_base.debug "Requesting update"
-      @plugin.protocolHandler.sendRequest @zoneCmd, '?', immediate
+      @protocolHandler.sendRequest @zoneCmd, '?', immediate
       .catch (error) =>
         @_base.error "Error:", error
       .finally () =>
@@ -60,7 +63,7 @@ module.exports = (env) ->
         if b.id is buttonId
           @_lastPressedButton = b.id
           @emit 'button', b.id
-          return @plugin.protocolHandler.sendRequest(@zoneCmd, b.id).then =>
+          return @protocolHandler.sendRequest(@zoneCmd, b.id).then =>
             @_requestUpdate()
           .catch (err) =>
             @_base.rejectWithErrorString Promise.reject, err
