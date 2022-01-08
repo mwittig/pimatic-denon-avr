@@ -6,6 +6,25 @@ module.exports = {
     type: "object"
     extensions: ["xLink", "xPresentLabel", "xAbsentLabel", "xAttributeOptions"]
     properties:
+      debug:
+        type: "boolean"
+        description: "Debug mode. Writes debug messages to the pimatic log, if set to true."
+        default: false
+      protocol:
+        description: "The control protocol to be used (HTTP may not work with older receiver models)"
+        enum: ["TELNET", "HTTP"]
+        default: "TELNET"
+      host:
+        description: "Hostname or IP address of the AVR"
+        type: "string"
+        required: true
+      port:
+        description: """
+          AVR control port (inly required for testing). Defaults to port 23
+          for TELNET protocol and port 80 for HTTP protocol
+        """
+        type: "number"
+        required: false
       interval:
         description: """
           The time interval in seconds (minimum 2) at which the presence state of the
@@ -28,6 +47,25 @@ module.exports = {
     type: "object"
     extensions: ["xLink", "xPresentLabel", "xAbsentLabel", "xAttributeOptions"]
     properties:
+      debug:
+        type: "boolean"
+        description: "Debug mode. Writes debug messages to the pimatic log, if set to true."
+        default: false
+      protocol:
+        description: "The control protocol to be used (HTTP may not work with older receiver models)"
+        enum: ["TELNET", "HTTP"]
+        default: "TELNET"
+      host:
+        description: "Hostname or IP address of the AVR"
+        type: "string"
+        required: true
+      port:
+        description: """
+          AVR control port (inly required for testing). Defaults to port 23
+          for TELNET protocol and port 80 for HTTP protocol
+        """
+        type: "number"
+        required: false
       interval:
         description: """
           The time interval in seconds (minimum 2) at which the volume state of the
@@ -63,6 +101,25 @@ module.exports = {
     type: "object"
     extensions: ["xLink", "xPresentLabel", "xAbsentLabel", "xAttributeOptions"]
     properties:
+      debug:
+        type: "boolean"
+        description: "Debug mode. Writes debug messages to the pimatic log, if set to true."
+        default: false
+      protocol:
+        description: "The control protocol to be used (HTTP may not work with older receiver models)"
+        enum: ["TELNET", "HTTP"]
+        default: "TELNET"
+      host:
+        description: "Hostname or IP address of the AVR"
+        type: "string"
+        required: true
+      port:
+        description: """
+          AVR control port (inly required for testing). Defaults to port 23
+          for TELNET protocol and port 80 for HTTP protocol
+        """
+        type: "number"
+        required: false
       zone:
         description: """
           The zone for which volume shall be controlled. If set to MAIN it is
@@ -105,6 +162,25 @@ module.exports = {
     type: "object"
     extensions: ["xLink", "xOnLabel", "xOffLabel"]
     properties:
+      debug:
+        type: "boolean"
+        description: "Debug mode. Writes debug messages to the pimatic log, if set to true."
+        default: false
+      protocol:
+        description: "The control protocol to be used (HTTP may not work with older receiver models)"
+        enum: ["TELNET", "HTTP"]
+        default: "TELNET"
+      host:
+        description: "Hostname or IP address of the AVR"
+        type: "string"
+        required: true
+      port:
+        description: """
+          AVR control port (inly required for testing). Defaults to port 23
+          for TELNET protocol and port 80 for HTTP protocol
+        """
+        type: "number"
+        required: false
       interval:
         description: """
           The time interval in seconds (minimum 2) at which the power state
@@ -120,6 +196,25 @@ module.exports = {
     type: "object"
     extensions: ["xLink", "xOnLabel", "xOffLabel"]
     properties:
+      debug:
+        type: "boolean"
+        description: "Debug mode. Writes debug messages to the pimatic log, if set to true."
+        default: false
+      protocol:
+        description: "The control protocol to be used (HTTP may not work with older receiver models)"
+        enum: ["TELNET", "HTTP"]
+        default: "TELNET"
+      host:
+        description: "Hostname or IP address of the AVR"
+        type: "string"
+        required: true
+      port:
+        description: """
+          AVR control port (inly required for testing). Defaults to port 23
+          for TELNET protocol and port 80 for HTTP protocol
+        """
+        type: "number"
+        required: false
       zone:
         description: "The zone to be controlled"
         enum: ["MAIN", "ZONE2", "ZONE3"]
@@ -139,6 +234,25 @@ module.exports = {
     type: "object"
     extensions: ["xLink", "xOnLabel", "xOffLabel"]
     properties:
+      debug:
+        type: "boolean"
+        description: "Debug mode. Writes debug messages to the pimatic log, if set to true."
+        default: false
+      protocol:
+        description: "The control protocol to be used (HTTP may not work with older receiver models)"
+        enum: ["TELNET", "HTTP"]
+        default: "TELNET"
+      host:
+        description: "Hostname or IP address of the AVR"
+        type: "string"
+        required: true
+      port:
+        description: """
+          AVR control port (inly required for testing). Defaults to port 23
+          for TELNET protocol and port 80 for HTTP protocol
+        """
+        type: "number"
+        required: false
       zone:
         description: "The zone to be controlled"
         enum: ["MAIN", "ZONE2", "ZONE3"]
@@ -158,6 +272,25 @@ module.exports = {
     type: "object"
     extensions: ["xLink", "xOnLabel", "xOffLabel"]
     properties:
+      debug:
+        type: "boolean"
+        description: "Debug mode. Writes debug messages to the pimatic log, if set to true."
+        default: false
+      protocol:
+        description: "The control protocol to be used (HTTP may not work with older receiver models)"
+        enum: ["TELNET", "HTTP"]
+        default: "TELNET"
+      host:
+        description: "Hostname or IP address of the AVR"
+        type: "string"
+        required: true
+      port:
+        description: """
+          AVR control port (inly required for testing). Defaults to port 23
+          for TELNET protocol and port 80 for HTTP protocol
+        """
+        type: "number"
+        required: false
       zone:
         description: "The zone to be controlled"
         enum: ["MAIN", "ZONE2", "ZONE3"]
